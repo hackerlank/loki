@@ -1,0 +1,46 @@
+syntax = "proto2";
+
+import "login.proto";
+
+package Super;
+
+//区服务器登录消息
+message Login
+{
+}
+
+message ServerEntry
+{
+	optional uint32 id = 1;
+	optional uint32 type = 2;
+	optional string name = 3;
+	optional string ip = 4;
+	optional uint32 port = 5;
+	optional string extip = 6;
+	optional uint32 extport = 7;
+	optional uint32 nettype = 8;
+}
+
+message t_Startup_Request
+{
+	optional uint32 type = 1;
+}
+
+message t_Startup_Response
+{
+	//required ServerEntry entry = 1;
+	required uint32 index = 1;
+	repeated ServerEntry entry = 2;
+}
+
+
+message t_NewSession_Gateway {
+	optional .Login.t_NewLoginSession session = 1;
+}
+
+message t_RQGYList_Gateway {
+}
+
+message t_GYList_Gateway {
+	optional .Login.t_GYList_FL gateinfo = 1;
+}

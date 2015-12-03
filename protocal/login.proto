@@ -1,0 +1,73 @@
+syntax = "proto2";
+
+package Login;
+
+//区服务器登录消息
+//super->login
+message ReqZoneLogin
+{
+	required uint32 openport = 1;
+}
+
+//login->super
+message t_LoginFL_OK
+{
+	required uint32 game = 1;	//游戏类型
+	required uint32 zone = 2;	//区号
+	required string name = 3;	//区名
+}
+
+message t_NewLoginSession
+{
+	optional uint64 loginid = 1;			//LoginClient id in SuperServer
+	optional uint32 accid = 2;
+	optional string name = 3;
+	optional uint32 gatewayid = 4;
+	optional string ip = 5;
+	optional uint32 port = 6;
+	optional uint64 logintempid = 7;		//LoginTask id
+}
+
+message PlayerLogin
+{
+	required t_NewLoginSession session = 1;
+}
+
+message t_NewSession_Session {
+	optional t_NewLoginSession session = 1;
+}
+
+message t_GYList_FL {
+	optional uint32 serverid = 1;
+	optional string ip = 2;
+	optional uint32 port = 3;
+	optional uint32 num_online = 4;
+	optional uint32 version = 5;
+	optional uint32 net_type = 6;
+}
+
+//client verify , the very first user message
+message stUserVerifyVerCmd {
+	optional uint32 version = 1;
+}
+
+//user login to loginserver
+message stUserRequestLoginCmd {
+	optional string account = 1;
+	optional string passwd = 2;
+	optional uint32 game = 3;
+	optional uint32 zone = 4;
+}
+
+message stServerReturnLoginFailedCmd {
+	optional uint32 code = 1;
+}
+
+//login success, return gateway server ip , port and key.
+message stServerReturnLoginSuccessCmd {
+	optional uint32 accid = 1;
+	optional uint64 logintempid = 2;
+	optional string ip = 3;
+	optional uint32 port = 4;
+	optional string key = 5;
+}

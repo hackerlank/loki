@@ -1,0 +1,21 @@
+syntax = "proto2";
+
+package SceneCmd;
+
+message  t_LoginScene
+{
+	optional uint32 id = 1;
+	optional uint32 type = 2;
+}
+
+message MapIndexXY
+{
+	optional uint32 maptempid = 1;
+	optional uint32 mapx = 2;
+	optional uint32 mapy = 3;
+}
+
+message t_fresh_MapIndex {
+	optional uint32 size = 1;
+	repeated MapIndexXY mps = 2;
+}

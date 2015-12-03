@@ -1,0 +1,47 @@
+syntax = "proto2";
+
+package Gate;
+
+message stUserVerifyVerCmd {
+	optional uint32 version = 1;
+}
+
+message stPasswdLogonUserCmd {
+	optional uint64 logintempid = 1;
+	optional uint32 accid = 2;
+	optional string username = 3;
+	optional string password = 4;
+}
+
+message stServerReturnLoginFailedCmd {
+	optional uint32 returncode = 1;
+}
+
+message SelectUserInfo {
+	optional uint32 id = 1;
+	optional string name = 2;
+	optional uint32 type = 3;
+	optional uint32 country = 4;
+}
+
+
+message stUserInfoUserCmd {
+	repeated SelectUserInfo charInfo = 1;
+}
+
+//client<->gate
+message stCheckNameSelectUserCmd {
+	optional string name = 1;
+	optional uint32 code = 2;
+}
+
+message stCreateSelectUserCmd {
+	optional string name = 1;
+	optional uint32 country = 2;
+	//hair
+	//fivetype
+}
+
+message stLoginSelectUserCmd {
+	optional uint32 no = 1;	//编号
+}

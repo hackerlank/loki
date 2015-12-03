@@ -1,0 +1,16 @@
+syntax = "proto2";
+
+package Cmd;
+
+message stAttackMagicUserCmd 
+{
+	optional uint32 dwDefenceTempID = 1;
+	optional uint32 dwUserTempID = 2;
+	optional uint32 wdMagicType = 3;
+	optional uint32 byAttackType = 4;
+	optional uint32 yDes = 5;
+	optional uint32 xDes = 6;
+	optional uint32 byDirect = 7;
+	optional uint32 byAction = 8;
+	repeated uint32 dwTempIDList = 9;
+}

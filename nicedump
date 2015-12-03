@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cat ./err | ./asan_symbolize.py | c++filt
+

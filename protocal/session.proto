@@ -1,0 +1,33 @@
+
+syntax = "proto2";
+
+package Session;
+
+message  t_LoginSession
+{
+	optional uint32 id = 1;
+	optional uint32 type = 2;
+}
+
+message t_regUser_GateSession {
+	optional uint32 accid = 1;
+	optional string name = 2;
+	optional uint32 country = 3;
+	optional uint32 id = 4;
+	optional string ip = 5;
+}
+
+message t_regScene_SceneSession {
+	optional uint32 id = 1;
+	optional uint32 tempid = 2;
+	optional string name = 3;
+	optional string filename = 4;
+	optional uint32 country = 5;
+	optional uint32 level = 6;
+	optional uint32 maptype = 7;
+}
+
+message t_regScene_ret_SceneSession {
+	optional uint32 tempid = 1;
+	optional uint32 value = 2;
+}

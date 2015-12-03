@@ -2,41 +2,23 @@
 #include <iostream>
 #include "logger.h"
 #include <unistd.h>
+#include "util.h"
 
 using namespace std;
 using namespace loki;
 
 int main(int argc, char** argv)
 {
-	InitLog(argv[0]);
-	int thread = 1;
-	bool daem = false;
-
-	int ch = 0;
-	while ((ch = getopt(argc, argv, "t:d"))!= -1)
-	{
-		switch (ch)
-		{
-			case 't':
-				{
-					thread = atoi(optarg);
-				}
-				break;
-			case 'd':
-				{
-					daem = true;
-				}
-				break;
-		}
-	}
-	if (daem)
+	Global::ParseCommand(argc, argv);
+	if (Global::Get<bool>("Daemon"))
 	{
 		int ret = daemon(1,1);
 	}
+	InitLog(argv[0]);
 
-	io_service_pool pool(thread);
-	std::unique_ptr<service> s(new SuperServer("script/login.lua", pool));
-	if (SuperServer::instance().init())
+	io_service_pool pool(Global::Get<uint32_t>("ThreadNum"));
+	auto server(new SuperServer(Global::Get<std::string>("Script"), pool));
+	if (server->init())
 		pool.run();
 	return 0;
 }

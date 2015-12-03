@@ -16,20 +16,13 @@ namespace loki
 				return boost::lexical_cast<T>(Value[key]);
 			}
 
-		/*
-		template<>
-			static std::string Get(const std::string& key) {
-				return Value[key];
-			}
-			*/
-
 		static void ParseCommand(const int argc, char** argv)
 		{
 			Value["Daemon"] = "0";
 			Value["ThreadNum"] = "1";
 
 			int ch = 0;
-			while ((ch = getopt(argc, argv, "t:d"))!= -1)
+			while ((ch = getopt(argc, argv, "t:df:"))!= -1)
 			{
 				switch (ch)
 				{
@@ -41,6 +34,11 @@ namespace loki
 					case 'd':
 						{
 							Value["Daemon"] = "1";
+						}
+						break;
+					case 'f':
+						{
+							Value["Script"] = optarg;
 						}
 						break;
 				}

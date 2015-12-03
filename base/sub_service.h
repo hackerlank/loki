@@ -45,7 +45,7 @@ public:
 
 	void on_super_connected(connection_ptr conn);
 	std::shared_ptr<script> get_script() { return script_; }
-	lua_State* get_lua_state() { return script_->get_state(); }
+	lua_State* getLuaState() { return script_->get_state(); }
 
 	bool _start_server();
 	virtual bool start_server() { return true; }

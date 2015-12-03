@@ -1,15 +1,16 @@
 #!/bin/bash
 
-./LoginServer/LoginServer -t 2 -d
+path=`pwd`
+${path}/LoginServer/LoginServer -t 2 -d -f script/login.lua
 #sleep 1
-./SuperServer/SuperServer -t 2 -d
+${path}/SuperServer/SuperServer -t 2 -d -f script/login.lua
 sleep 0.1
-./RecordServer/RecordServer -t 2 -d
+${path}/RecordServer/RecordServer -t 2 -d -f script/login.lua
 sleep 0.1
-./SessionServer/SessionServer -t 2 -d
+${path}/SessionServer/SessionServer -t 2 -d -f script/login.lua
 sleep 0.1
-./SceneServer/SceneServer -t 2 -d
+${path}/SceneServer/SceneServer -t 2 -d -f script/sceneserver.lua
 sleep 0.1
-./SceneServer/SceneServer -t 2 -d
+${path}/SceneServer/SceneServer -t 2 -d -f script/sceneserver.lua
 sleep 0.1
-./GatewayServer/GatewayServer -t 2 -d
+${path}/GatewayServer/GatewayServer -t 2 -d -f script/gate.lua

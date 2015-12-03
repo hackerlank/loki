@@ -108,7 +108,7 @@ bool SceneServer::start_server()
 	if (!SceneManager::instance().init())
 		return false;
 		*/
-	bool init_ret = lua_tinker::call<bool>(get_lua_state(), "StartServer");
+	bool init_ret = lua_tinker::call<bool>(getLuaState(), "StartServer");
 	return init_ret;
 }
 

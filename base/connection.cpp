@@ -277,20 +277,25 @@ void connection::close()
 
 void connection::async_connect(const std::string& host, const uint16_t port)
 {
+	LOG(INFO)<<__func__<<",host="<<host<<",port="<<port;
 	flag_ = 0;
-	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(host), port);
-	socket_.async_connect(endpoint, boost::bind(&connection::handle_connect, shared_from_this(), _1));
+	using namespace boost::asio::ip;
+	tcp::resolver resolver(get_io_service());
+	tcp::resolver::query query(host, boost::lexical_cast<std::string>(port));
+	tcp::resolver::iterator iterator = resolver.resolve(query);
+
+	boost::asio::async_connect(socket_, iterator, boost::bind(&connection::handle_connect, shared_from_this(), boost::asio::placeholders::error));
 }
 
-void connection::handle_connect(const boost::system::error_code& error)
+void connection::handle_connect(const boost::system::error_code& e)
 {
-	if (!error)
+	if (!e)
 	{
 		start();
 	}
 	else
 	{
-		handle_error(error, __func__);
+		handle_error(e, __func__);
 	}
 }
 

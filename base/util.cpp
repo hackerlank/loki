@@ -1,3 +1,5 @@
 #include "util.h"
 
-std::map<std::string, std::string> loki::Global::Value;
+using namespace loki;
+
+std::map<std::string, std::string> Global::Value;

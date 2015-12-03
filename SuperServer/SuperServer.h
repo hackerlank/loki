@@ -75,7 +75,7 @@ public:
 	ServerList serverlist_;
 
 	ServerList& get_serverlist() { return serverlist_; }
-	bool loadServerlist();
+	void LoadServerList();
 	std::vector<int> getDependencyID(const int type) const;
 
 };

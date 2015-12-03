@@ -980,6 +980,22 @@ namespace lua_tinker
 			return pop<T>(m_L);
 		}
 
+		template<typename T>
+		T get_index(const int index)
+		{
+			if(validate())
+			{
+				lua_pushnumber(m_L, index);
+				lua_gettable(m_L, m_index);
+			}
+			else
+			{
+				lua_pushnil(m_L);
+			}
+
+			return pop<T>(m_L);
+		}
+
 		lua_State*		m_L;
 		int				m_index;
 		const void*		m_pointer;
@@ -1005,6 +1021,12 @@ namespace lua_tinker
 		T get(const char* name)
 		{
 			return m_obj->get<T>(name);
+		}
+
+		template<typename T>
+		T get_index(const int index)
+		{
+			return m_obj->get_index<T>(index);
 		}
 
 		table_obj*		m_obj;

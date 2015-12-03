@@ -35,6 +35,7 @@ public:
 		return true;
 	}
 	lua_State* get_state() { return L; }
+	lua_State* GetLuaState() { return L; }
 
 	template<class T>
 		T get(const char* name)

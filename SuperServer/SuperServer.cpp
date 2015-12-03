@@ -101,14 +101,65 @@ bool SuperServer::init()
 	s_dbConn->setSchema(common.get<const char*>("database"));
 	//}
 
-	if (!loadServerlist())
-	{
-		return false;
-	}
+	LoadServerList();
 
 	registerCallback();
 	return true;
 }
+
+void SuperServer::LoadServerList()
+{
+	serverlist_.ses_.clear();
+	lua_tinker::table list = script_->get<lua_tinker::table>("ServerList");
+	int size = lua_tinker::call<int>(script_->GetLuaState(), "GetTableSize", list);
+	LOG(INFO)<< "ServerList size = "<<size;
+	for (size_t i=0;i<size; ++i)
+	{
+		lua_tinker::table item = list.get_index<lua_tinker::table>(i+1);
+		std::shared_ptr<Super::ServerEntry> se(new Super::ServerEntry);
+		se->set_id(item.get<uint32_t>("id"));
+		se->set_type(item.get<uint32_t>("_type"));
+		se->set_name(item.get<const char*>("name"));
+		se->set_ip(item.get<const char*>("ip"));
+		se->set_port(item.get<uint32_t>("port"));
+		se->set_extip(item.get<const char*>("extip"));
+		se->set_extport(item.get<uint32_t>("extport"));
+		se->set_nettype(item.get<uint32_t>("nettype"));
+
+		serverlist_.ses_.push_back(se);
+	}
+	if(serverlist_.ses_.empty())
+	{
+		LOG(ERROR)<<("serverlist is empty");
+		return ;
+	}
+	LOG(INFO)<<"serverlist size="<<serverlist_.ses_.size();
+
+	serverSequence[SESSIONSERVER].push_back(RECORDSERVER);
+	serverSequence[SCENESERVER].push_back(RECORDSERVER);
+	serverSequence[SCENESERVER].push_back(SESSIONSERVER);
+
+	serverSequence[GATEWAYSERVER].push_back(SESSIONSERVER);
+	serverSequence[GATEWAYSERVER].push_back(RECORDSERVER);
+	serverSequence[GATEWAYSERVER].push_back(SCENESERVER);
+	/*
+	   serverSequence[GATEWAYSERVER].push_back(BILLSERVER);
+	*/
+
+	//init dependency
+	for (auto it = serverSequence.begin(); it != serverSequence.end(); ++it)
+	{
+		for (auto n = it->second.begin(); n != it->second.end(); ++n)
+		{
+			std::vector<int> a(serverlist_.getIDByType(*n));
+			if (!a.empty())
+			{
+				std::copy(a.begin(), a.end(), back_inserter(dependency_[it->first]));
+			}
+		}
+	}
+}
+
 
 void SuperServer::init_thread_data()
 {
@@ -159,81 +210,5 @@ std::vector<int> SuperServer::getDependencyID(const int type) const
 		return it->second;
 	else
 		return std::vector<int>();
-}
-
-
-bool SuperServer::loadServerlist()
-	try
-{
-	serverlist_.ses_.clear();
-	std::unique_ptr< sql::Statement > stmt(s_dbConn->createStatement());
-	std::unique_ptr< sql::ResultSet > res(stmt->executeQuery("SELECT * FROM serverlist"));
-	while(res->next())
-	{
-		std::shared_ptr<Super::ServerEntry> se(new Super::ServerEntry);
-
-		se->set_id(res->getUInt("id"));
-		se->set_type(res->getUInt("type"));
-		se->set_name(res->getString("name"));
-		se->set_ip(res->getString("ip"));
-		se->set_port(res->getUInt("port"));
-		se->set_extip(res->getString("extip"));
-		se->set_extport(res->getUInt("extport"));
-		se->set_nettype(res->getUInt("nettype"));
-
-		serverlist_.ses_.push_back(se);
-	}
-	if(serverlist_.ses_.empty())
-	{
-		LOG(ERROR)<<("serverlist is empty");
-		return false;
-	}
-	LOG(INFO)<<"serverlist size="<<serverlist_.ses_.size();
-
-	serverSequence[SESSIONSERVER].push_back(RECORDSERVER);
-	serverSequence[SCENESERVER].push_back(RECORDSERVER);
-	serverSequence[SCENESERVER].push_back(SESSIONSERVER);
-
-	serverSequence[GATEWAYSERVER].push_back(SESSIONSERVER);
-	serverSequence[GATEWAYSERVER].push_back(RECORDSERVER);
-	serverSequence[GATEWAYSERVER].push_back(SCENESERVER);
-	/*
-	   serverSequence[GATEWAYSERVER].push_back(BILLSERVER);
-	*/
-
-	//init dependency
-	for (auto it = serverSequence.begin(); it != serverSequence.end(); ++it)
-	{
-		for (auto n = it->second.begin(); n != it->second.end(); ++n)
-		{
-			std::vector<int> a(serverlist_.getIDByType(*n));
-			if (!a.empty())
-			{
-				std::copy(a.begin(), a.end(), back_inserter(dependency_[it->first]));
-			}
-		}
-	}
-
-
-	return true;
-} catch (sql::SQLException &e) {
-	using namespace std;
-	std::ostringstream oss;
-	oss << "# ERR: SQLException in " << __FILE__;
-	oss << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
-	oss << "# ERR: " << e.what();
-	oss << " (MySQL error code: " << e.getErrorCode();
-	oss << ", SQLState: " << e.getSQLState() << " )" << endl;
-	LOG(INFO)<<oss.str();
-	return false;
-} catch (std::runtime_error &e) {
-	using namespace std;
-	std::ostringstream oss;
-	oss << "# ERR: runtime_error in " << __FILE__;
-	oss << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
-	oss << "# ERR: " << e.what() << endl;
-	oss << "not ok 1 - examples/resultset_binary.cpp" << endl;
-	LOG(INFO)<<oss.str();
-	return false;
 }
 

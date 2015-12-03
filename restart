@@ -27,4 +27,4 @@ do
 	echo "ServerNum: $cond"
 done
 
-. go >> /dev/tty
+./go >> /dev/tty

@@ -13,7 +13,7 @@ LIBS = -lpthread -lboost_system  `xml2-config --libs`
 CXXFLAGS = $(compile_opt) $(HEADER_DIR) -D_REENTRANT -D_GNU_SOURCE
 CXXLFLAGS = $(compile_opt) $(LIB_DIR) $(LIBS)
 
-objects = server.o io_service_pool.o connection.o protobuf_codec.o db.o ServerList.o context.o sub_service.o logger.o zXMLParser.o
+objects = server.o connection.o protobuf_codec.o db.o ServerList.o context.o sub_service.o logger.o zXMLParser.o
 objects += ServerManager.o
 objects += util.o
 

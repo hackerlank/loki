@@ -4,7 +4,7 @@ Common = {
 
 	hostname="tcp://127.0.0.1:3306",
 	user="root",
-	password="fuck@123",
+	password="test@123",
 	database="loki",
 }
 

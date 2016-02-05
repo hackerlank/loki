@@ -4,12 +4,10 @@ compile_relase = -g -Wall -O1
 
 compile_opt = $(compile_debug) $(SEAL_COMPILE_OPT)
 
-#BOOST_PATH = /home/loki/boost
-
-HEADER_DIR = -I./ -I/usr/include/lua5.2 -I../lua_tinker -I/usr/local/include -I$(BOOST_PATH) `xml2-config --cflags`
+HEADER_DIR = -I./ -I/usr/include/lua5.2 -I../lua_tinker -I/usr/local/include `xml2-config --cflags` 
 LIB_DIR = 
 #LIBS = -lboost_system -lpthread -lboost_thread -lmysqlcppconn -lrt
-LIBS = -lpthread -L$(BOOST_PATH)/stage/lib -lboost_system  `xml2-config --libs`
+LIBS = -lpthread -lboost_system  `xml2-config --libs`
 
 #CXX = g++
 CXXFLAGS = $(compile_opt) $(HEADER_DIR) -D_REENTRANT -D_GNU_SOURCE

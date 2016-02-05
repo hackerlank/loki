@@ -1,14 +1,13 @@
 BUILD_DIR_ROOT = $(PWD)
 
-#export BOOST_PATH = /home/loki/boost
 LOKI_OPTIONS = -std=c++11 -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls
 SEAL_DEBUG_OPT = -g -Werror -Wno-unused-local-typedefs $(LOKI_OPTIONS)
 SEAL_DIST_OPT = -g -O1 -Werror $(LOKI_OPTIONS) 
 
 start_compile_time = $(shell date +%s)
 
-export COMMON_HEAD_DIR = -I../base -I./  -I/usr/include/lua5.2 -I../lua_tinker -I/usr/local/include -I$(BOOST_PATH) `xml2-config --cflags`
-export COMMON_LIB_DIR = -L/usr/local/lib -L../base -L$(BOOST_PATH)/stage/lib `xml2-config --libs`
+export COMMON_HEAD_DIR = -I../base -I./  -I/usr/include/lua5.2 -I../lua_tinker -I/usr/local/include `xml2-config --cflags`
+export COMMON_LIB_DIR = -L/usr/local/lib -L../base `xml2-config --libs`
 export COMMON_LIBS = -lseal -lpthread -lboost_system -lboost_chrono \
 			  -L../lua_tinker -llua_tinker \
 			  -llua5.2 -lssl -lcrypto -lprotobuf -lmysqlcppconn -lz -lglog

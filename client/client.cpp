@@ -37,8 +37,8 @@ public:
 		char key[32]= {'a', 'b', 'c'};
 		std::shared_ptr<loki::encryptor_aes> aes(new loki::encryptor_aes());
 		aes->setkey((const unsigned char*)key,256);
-		conn_->set_encryptor(aes);
-		conn_->set_compressor(std::shared_ptr<loki::compressor>(new loki::compressor_zlib()));
+		//conn_->set_encryptor(aes);
+		//conn_->set_compressor(std::shared_ptr<loki::compressor>(new loki::compressor_zlib()));
 
 	}
 	~gate_client()

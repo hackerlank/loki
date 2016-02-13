@@ -1,6 +1,6 @@
 BUILD_DIR_ROOT = $(PWD)
 
-LOKI_OPTIONS = -std=c++11 -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls
+LOKI_OPTIONS = -std=c++11 -fno-omit-frame-pointer -fno-optimize-sibling-calls
 SEAL_DEBUG_OPT = -g -Werror -Wno-unused-local-typedefs $(LOKI_OPTIONS)
 SEAL_DIST_OPT = -g -O1 -Werror $(LOKI_OPTIONS) 
 
@@ -13,8 +13,8 @@ export COMMON_LIBS = -lseal -lpthread -lboost_system -lboost_chrono \
 			  -llua5.2 -lssl -lcrypto -lprotobuf -lmysqlcppconn -lz -lglog
 
 
-SUB_DIRS = protocal base lua_tinker example client 
-SUB_DIRS += LoginServer SuperServer RecordServer SessionServer SceneServer GatewayServer 
+SUB_DIRS = protocal base lua_tinker example client super
+#SUB_DIRS += LoginServer SuperServer RecordServer SessionServer SceneServer GatewayServer 
 
 #TEST_SUB_DIRS = base/EncDec base tools
 ALL_SUB_DIRS = $(SUB_DIRS) 

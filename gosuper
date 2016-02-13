@@ -1,0 +1,4 @@
+#!/bin/bash
+
+path=`pwd`
+${path}/super/main -t 2 -f script/Super.lua

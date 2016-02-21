@@ -5,7 +5,7 @@
 #include "gate.pb.h"
 #include "super.pb.h"
 #include "record.pb.h"
-#include "session.pb.h"
+#include "Session.pb.h"
 #include "scene.pb.h"
 #include "LoginSessionManager.h"
 #include "GatewayTask.h"

@@ -11,8 +11,8 @@ middle_login: $(SRCS)
 	@mv super.pb.cc ../base/super.pb.cpp
 	@mv record.pb.h ../base/
 	@mv record.pb.cc ../base/record.pb.cpp
-	@mv session.pb.h ../base/
-	@mv session.pb.cc ../base/session.pb.cpp
+	@mv Session.pb.h ../base/
+	@mv Session.pb.cc ../base/Session.pb.cpp
 	@mv scene.pb.h ../base/
 	@mv scene.pb.cc ../base/scene.pb.cpp
 	@mv gate.pb.h ../base/

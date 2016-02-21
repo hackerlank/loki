@@ -128,6 +128,7 @@ namespace loki
 					callbacks_[T::descriptor()] = pb;
 				}
 			void clear() { callbacks_.clear(); }
+			size_t size() { return callbacks_.size(); }
 
 		private:
 			typedef std::unordered_map<const google::protobuf::Descriptor*, std::shared_ptr<callback> > CallbackMap;

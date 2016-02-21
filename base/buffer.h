@@ -45,6 +45,10 @@ public:
 	{
 		return (const void*)(buff_.data() + read_offset_);
 	}
+	void* data_ptr()
+	{
+		return (void*)(buff_.data() + read_offset_);
+	}
 	//buffers not buffer
 	mutable_buffer free_data()
 	{
@@ -116,6 +120,7 @@ public:
 		const T n = *((T*)data_ptr());
 		return n;
 	}
+
 public:
 	std::vector<char> buff_;
 	size_t read_offset_;

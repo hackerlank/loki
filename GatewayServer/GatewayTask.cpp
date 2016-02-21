@@ -3,7 +3,7 @@
 #include "encryptor_aes.h"
 #include "protobuf_codec.h"
 #include "logger.h"
-#include "session.pb.h"
+#include "Session.pb.h"
 #include "GatewayServer.h"
 
 GatewayTask::GatewayTask(connection_ptr conn)

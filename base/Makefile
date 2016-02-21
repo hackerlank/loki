@@ -14,10 +14,11 @@ CXXFLAGS = $(compile_opt) $(HEADER_DIR) -D_REENTRANT -D_GNU_SOURCE
 CXXLFLAGS = $(compile_opt) $(LIB_DIR) $(LIBS)
 
 objects = server.o connection.o protobuf_codec.o db.o ServerList.o context.o sub_service.o logger.o zXMLParser.o
+objects += TcpConn.o SubService.o
 objects += ServerManager.o
 objects += util.o
 
-objects += login.pb.o super.pb.o record.pb.o session.pb.o scene.pb.o gate.pb.o Cmd.pb.o
+objects += login.pb.o super.pb.o record.pb.o Session.pb.o scene.pb.o gate.pb.o Cmd.pb.o
 objects += compressor_zlib.o encryptor_aes.o zMisc.o zProperties.o zDatabaseManager.o
 #x_subnetservice.o
 sources = $(objects:%.o=%.cpp)

@@ -1,7 +1,7 @@
 #include "SceneManager.h"
 #include "SceneServer.h"
 #include <boost/lexical_cast.hpp>
-#include "session.pb.h"
+#include "Session.pb.h"
 #include "protobuf_codec.h"
 
 using namespace loki;

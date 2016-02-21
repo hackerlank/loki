@@ -7,13 +7,14 @@
 #include "Proto.h"
 #include "ServerList.h"
 #include <vector>
+#include "service.h"
+#include <unordered_map>
+#include "ConnEntity.h"
 
 using namespace loki;
 
-class SuperServer : public Singleton<SuperServer>
+class SuperServer : public Singleton<SuperServer>, service
 {
-	private:
-		loki::io_service_pool& pool;
 	public:
 		std::map<int, std::vector<int> > serverSequence; //type->types
 		SuperServer(loki::io_service_pool& pool);
@@ -31,4 +32,7 @@ class SuperServer : public Singleton<SuperServer>
 		std::vector<int> getDependencyID(const int type) const;
 		//服务器之间的依赖
 		std::map<int, std::vector<int> > dependency_;       //type->ids
+
+		std::unordered_map<uint32_t, ConnEntity*> sub_conns_;
+		ServerList& get_serverlist() { return serverlist_; }
 };

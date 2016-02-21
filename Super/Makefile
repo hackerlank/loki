@@ -12,12 +12,12 @@ LIBS = $(COMMON_LIBS)
 CXXFLAGS = -g -std=gnu++11 $(SEAL_COMPILE_OPT)  -D_GNU_SOURCE -D_REENTRANT $(header_dir)
 CXXLFLAGS = -g -std=gnu++11 $(SEAL_COMPILE_OPT) -Wall $(lib_dir) $(LIBS)
 
-objects = TcpConn.o SuperServer.o main.o
+objects = SuperServer.o main.o
 
 SRCS = $(objects:%.o=%.cpp)
 DEPS = $(objects:%.o=.%.d)
 
-ALL_TARGETS = main
+ALL_TARGETS = SuperServer
 
 all: $(ALL_TARGETS)
 

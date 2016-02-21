@@ -4,12 +4,14 @@
 
 using namespace loki;
 
-SuperServer::SuperServer(io_service_pool& p): pool(p)
+SuperServer::SuperServer(io_service_pool& p): service(p)
 {
 }
 
 bool SuperServer::Init(const std::string& filename)
 {
+	setup_signal_callback();
+
 	if (filename.empty())
 	{
 		LOG(ERROR)<<"Lack of scriptfile";
@@ -24,18 +26,26 @@ bool SuperServer::Init(const std::string& filename)
 
 	lua_tinker::table common = script_->get<lua_tinker::table>("Common");
 	port_ = (uint16_t)atoi(common.get<const char*>("super_port"));
-	server.reset(new TcpServer(pool, common.get<const char*>("super_ip"), common.get<const char*>("super_port")));
+	try {
+		server.reset(new TcpServer(pool_, common.get<const char*>("super_ip"), common.get<const char*>("super_port")));
+	}
+	catch(...)
+	{
+		LOG(ERROR)<<"Create TcpServer Failed, normally it is that the port is in use";
+		return false;
+	}
 	server->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &dispatcher_, std::placeholders::_1, std::placeholders::_2);
 	server->start_accept();
 
 	LoadServerList();
+	return true;
 }
 
 void SuperServer::RegisterCallback()
 {
 	dispatcher_.registerMsgCallback<Super::t_Startup_Request>(std::bind(onStartup_Request, std::placeholders::_1, std::placeholders::_2));
 
-	dispatcher_.registerMsgCallback<Login::stUserVerifyVerCmd>(std::bind(onUserVerifyVerCmd, std::placeholders::_1, std::placeholders::_2));
+	//dispatcher_.registerMsgCallback<Login::stUserVerifyVerCmd>(std::bind(onUserVerifyVerCmd, std::placeholders::_1, std::placeholders::_2));
 }
 
 void SuperServer::LoadServerList()

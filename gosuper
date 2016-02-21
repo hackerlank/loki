@@ -1,4 +1,8 @@
 #!/bin/bash
 
 path=`pwd`
-${path}/super/main -t 2 -f script/Super.lua
+${path}/Super/SuperServer -t 2 -d -f script/Super.lua
+sleep 0.1
+${path}/Record/RecordServer -t 2 -d -f script/login.lua
+sleep 0.1
+${path}/Session/SessionServer -t 2 -d -f script/login.lua

@@ -29,9 +29,11 @@ class TcpServer
 
 		void start_accept()
 		{
-			tcp_connection::pointer new_connection = tcp_connection::create(service_pool_);
+			TcpConnection::pointer new_connection = TcpConnection::create(service_pool_);
 
 			new_connection->msgHandler = msgHandler;
+			new_connection->connectedHandler = connectedHandler;
+			new_connection->errorHandler = errorHandler ;
 
 			acceptor_.async_accept(new_connection->socket(),
 					boost::bind(&TcpServer::handle_accept, this, new_connection,
@@ -39,12 +41,12 @@ class TcpServer
 		}
 
 	private:
-		void handle_accept(tcp_connection::pointer new_connection,
+		void handle_accept(TcpConnection::pointer new_connection,
 				const boost::system::error_code& error)
 		{
 			if (!error)
 			{
-				new_connection->start();
+				new_connection->Start();
 			}
 
 			start_accept();
@@ -55,6 +57,8 @@ class TcpServer
 
 	public:
 		std::function<void (TcpConnPtr, const MessagePtr)> msgHandler;
+		std::function<void (TcpConnection::pointer, const boost::system::error_code& error)> connectedHandler;
+		std::function<void (TcpConnection::pointer, const boost::system::error_code& error)> errorHandler;
 };
 
 }

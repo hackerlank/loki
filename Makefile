@@ -13,7 +13,7 @@ export COMMON_LIBS = -lseal -lpthread -lboost_system -lboost_chrono \
 			  -llua5.2 -lssl -lcrypto -lprotobuf -lmysqlcppconn -lz -lglog
 
 
-SUB_DIRS = protocal base lua_tinker example client super
+SUB_DIRS = protocal base lua_tinker example client Super Record Session
 #SUB_DIRS += LoginServer SuperServer RecordServer SessionServer SceneServer GatewayServer 
 
 #TEST_SUB_DIRS = base/EncDec base tools

@@ -7,7 +7,7 @@
 #include "singleton.h"
 #include "context.h"
 #include <memory>
-#include "record.pb.h"
+#include "Record.pb.h"
 
 using loki::connection_ptr;
 using loki::context_ptr;

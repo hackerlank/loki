@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-import "gate.proto";
+import "Gate.proto";
 
 package Record;
 

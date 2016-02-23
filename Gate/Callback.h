@@ -1,15 +1,16 @@
 #pragma once
 
-#include "RecordServer.h"
-#include "Record.pb.h"
-#include "RecordEntity.h"
+#include "GateServer.h"
+#include "Gate.pb.h"
+#include "GateEntity.h"
 
-bool onLoginRecord(TcpConnPtr conn, std::shared_ptr<Record::t_LoginRecord> msg) {
+/*
+bool onLoginGate(TcpConnPtr conn, std::shared_ptr<Gate::t_LoginGate> msg) {
 	if (conn->GetData() != nullptr) {
 		LOG(INFO)<<msg->GetTypeName()<<" should be the first message";
 		return false;
 	}
-	auto context(new RecordEntity(conn));
+	auto context(new GateEntity(conn));
 	conn->SetData(context);
 
 	context->set_id(msg->id());
@@ -19,3 +20,4 @@ bool onLoginRecord(TcpConnPtr conn, std::shared_ptr<Record::t_LoginRecord> msg) 
 	return true;
 }
 
+*/

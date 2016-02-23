@@ -9,14 +9,14 @@ middle_login: $(SRCS)
 	@mv login.pb.cc ../base/login.pb.cpp
 	@mv super.pb.h ../base/
 	@mv super.pb.cc ../base/super.pb.cpp
-	@mv record.pb.h ../base/
-	@mv record.pb.cc ../base/record.pb.cpp
+	@mv Record.pb.h ../base/
+	@mv Record.pb.cc ../base/Record.pb.cpp
 	@mv Session.pb.h ../base/
 	@mv Session.pb.cc ../base/Session.pb.cpp
-	@mv scene.pb.h ../base/
-	@mv scene.pb.cc ../base/scene.pb.cpp
-	@mv gate.pb.h ../base/
-	@mv gate.pb.cc ../base/gate.pb.cpp
+	@mv Scene.pb.h ../base/
+	@mv Scene.pb.cc ../base/Scene.pb.cpp
+	@mv Gate.pb.h ../base/
+	@mv Gate.pb.cc ../base/Gate.pb.cpp
 	@mv Cmd.pb.h ../base/
 	@mv Cmd.pb.cc ../base/Cmd.pb.cpp
 	@touch middle_login

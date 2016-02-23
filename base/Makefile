@@ -18,7 +18,7 @@ objects += TcpConn.o SubService.o
 objects += ServerManager.o
 objects += util.o
 
-objects += login.pb.o super.pb.o record.pb.o Session.pb.o scene.pb.o gate.pb.o Cmd.pb.o
+objects += login.pb.o super.pb.o Record.pb.o Session.pb.o Scene.pb.o Gate.pb.o Cmd.pb.o
 objects += compressor_zlib.o encryptor_aes.o zMisc.o zProperties.o zDatabaseManager.o
 #x_subnetservice.o
 sources = $(objects:%.o=%.cpp)

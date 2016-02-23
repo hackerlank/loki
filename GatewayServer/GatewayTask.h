@@ -2,7 +2,7 @@
 
 #include "connection.h"
 #include "context.h"
-#include "record.pb.h"
+#include "Record.pb.h"
 #include <memory>
 
 using namespace loki;

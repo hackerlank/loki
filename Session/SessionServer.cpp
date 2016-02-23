@@ -1,7 +1,7 @@
 #include "SessionServer.h"
 #include "Callback.h"
 #include "ServerType.h"
-#include "record.pb.h"
+#include "Record.pb.h"
 #include "db.h"
 
 using namespace loki;

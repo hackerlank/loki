@@ -1,7 +1,7 @@
 #include "SessionServer.h"
 #include "SessionTask.h"
 #include <cstdlib>
-#include "record.pb.h"
+#include "Record.pb.h"
 #include "Session.pb.h"
 #include "SessionCallback.h"
 #include "SceneSessionManager.h"

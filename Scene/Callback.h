@@ -1,15 +1,15 @@
 #pragma once
 
-#include "RecordServer.h"
-#include "Record.pb.h"
-#include "RecordEntity.h"
+#include "SceneServer.h"
+#include "Scene.pb.h"
+#include "SceneEntity.h"
 
-bool onLoginRecord(TcpConnPtr conn, std::shared_ptr<Record::t_LoginRecord> msg) {
+bool onLoginScene(TcpConnPtr conn, std::shared_ptr<SceneCmd::t_LoginScene> msg) {
 	if (conn->GetData() != nullptr) {
 		LOG(INFO)<<msg->GetTypeName()<<" should be the first message";
 		return false;
 	}
-	auto context(new RecordEntity(conn));
+	auto context(new SceneEntity(conn));
 	conn->SetData(context);
 
 	context->set_id(msg->id());

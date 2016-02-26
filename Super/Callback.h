@@ -1,8 +1,8 @@
 #pragma once
 
 #include "SuperServer.h"
-#include "super.pb.h"
-#include "login.pb.h"
+#include "Super.pb.h"
+#include "Login.pb.h"
 #include "ServerEntity.h"
 
 bool onStartup_Request(TcpConnPtr conn, std::shared_ptr<Super::t_Startup_Request> msg) {

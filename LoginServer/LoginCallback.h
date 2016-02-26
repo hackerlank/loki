@@ -1,7 +1,7 @@
 #pragma once
 
 #include "LoginServer.h"
-#include "login.pb.h"
+#include "Login.pb.h"
 #include "GYListManager.h"
 #include "login_return.h"
 #include "db.h"

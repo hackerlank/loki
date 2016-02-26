@@ -1,5 +1,5 @@
 #include "SubService.h"
-#include "super.pb.h"
+#include "Super.pb.h"
 #include <boost/lexical_cast.hpp>
 #include "compressor_zlib.h"
 #include "TcpConn.h"

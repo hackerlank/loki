@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-import "login.proto";
+import "Login.proto";
 
 package Super;
 

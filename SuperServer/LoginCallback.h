@@ -1,8 +1,8 @@
 #pragma once
 
 #include "SuperServer.h"
-#include "login.pb.h"
-#include "super.pb.h"
+#include "Login.pb.h"
+#include "Super.pb.h"
 #include "ServerManager.h"
 #include <memory>
 

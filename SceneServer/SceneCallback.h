@@ -2,7 +2,7 @@
 
 #include "SceneServer.h"
 
-#include "super.pb.h"
+#include "Super.pb.h"
 #include "Record.pb.h"
 #include "Session.pb.h"
 #include "scene.pb.h"

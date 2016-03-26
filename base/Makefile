@@ -5,22 +5,23 @@ compile_relase = -g -Wall -O1
 compile_opt = $(compile_debug) $(SEAL_COMPILE_OPT)
 
 HEADER_DIR = -I./ -I/usr/include/lua5.2 -I../lua_tinker -I/usr/local/include `xml2-config --cflags` 
-LIB_DIR = 
+LIB_DIR = -L../lua_tinker
 #LIBS = -lboost_system -lpthread -lboost_thread -lmysqlcppconn -lrt
-LIBS = -lpthread -lboost_system  `xml2-config --libs`
+LIBS = -lpthread -lboost_system  `xml2-config --libs` -llua_tinker
 
 #CXX = g++
 CXXFLAGS = $(compile_opt) $(HEADER_DIR) -D_REENTRANT -D_GNU_SOURCE
 CXXLFLAGS = $(compile_opt) $(LIB_DIR) $(LIBS)
 
-objects = server.o connection.o protobuf_codec.o db.o ServerList.o context.o sub_service.o logger.o zXMLParser.o
+objects = server.o protobuf_codec.o db.o ServerList.o context.o logger.o
 objects += TcpConn.o SubService.o
 objects += ServerManager.o
 objects += util.o
 
 objects += Login.pb.o Super.pb.o Record.pb.o Session.pb.o Scene.pb.o Gate.pb.o Cmd.pb.o
 objects += compressor_zlib.o encryptor_aes.o zMisc.o zProperties.o zDatabaseManager.o
-#x_subnetservice.o
+objects += Service.o
+
 sources = $(objects:%.o=%.cpp)
 deps = $(objects:%.o=.%.d)
 

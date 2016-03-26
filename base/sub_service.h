@@ -14,7 +14,6 @@
 #include "protobuf_dispatcher.h"
 #include "protobuf_codec.h"
 #include <string>
-#include "script.h"
 
 namespace loki
 {
@@ -44,7 +43,6 @@ public:
 	virtual void on_error(connection_ptr conn) {}
 
 	void on_super_connected(connection_ptr conn);
-	std::shared_ptr<script> get_script() { return script_; }
 	lua_State* getLuaState() { return script_->get_state(); }
 
 	bool _start_server();
@@ -61,8 +59,6 @@ protected:
 	protobuf_codec codec_;
 
 	void do_msg(connection_ptr conn, MessagePtr msg);
-
-	std::shared_ptr<script> script_;
 public:
 	connection_ptr superclient_;
 

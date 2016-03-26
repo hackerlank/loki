@@ -9,6 +9,9 @@
 #include "service.h"
 #include <unordered_map>
 #include "ConnEntity.h"
+#include "ConnContainer.h"
+#include "gamezone.h"
+#include "ACLZone.h"
 
 using namespace loki;
 
@@ -19,7 +22,7 @@ class LoginServer : public Singleton<LoginServer>, service
 		LoginServer(loki::io_service_pool& pool);
 		bool Init(const std::string& file);
 
-		std::shared_ptr<script> script_;
+		ConnContainer serverConns;
 
 		std::shared_ptr<TcpServer> server;
 		ProtoDispatcher superDispatcher_;
@@ -37,4 +40,11 @@ class LoginServer : public Singleton<LoginServer>, service
 		std::shared_ptr<TcpServer> userServer;
 		ProtoDispatcher userDispatcher_;
 		void HandleErrorUserClient(TcpConnPtr conn, const boost::system::error_code& err);
+
+		bool LoadAcl();
+
+		std::unordered_map<GameZone_t, std::shared_ptr<ACLZone> > aclmap;
+		std::shared_ptr<ACLZone> getAcl(const std::string& ip, const uint16_t port);
+
+		std::mutex mutex_;
 };

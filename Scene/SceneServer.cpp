@@ -43,7 +43,7 @@ void SceneServer::disconnectSession(TcpConnPtr conn, const boost::system::error_
 bool SceneServer::PostInit()
 {
 	//connect RecordServer
-	recordClient.reset(new TcpConnection(pool_));
+	recordClient.reset(new TcpConnection(pool_.get_io_service()));
 	recordClient->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &recordDispatcher, std::placeholders::_1, std::placeholders::_2);
 	recordClient->errorHandler = std::bind(&SceneServer::disconnectRecord, this, std::placeholders::_1, std::placeholders::_2);
 	ServerEntryPtr recordEntry = serverlist_.getEntryByType(RECORDSERVER);
@@ -66,7 +66,7 @@ bool SceneServer::PostInit()
 		recordClient->SendMessage(&send);
 	}
 
-	sessionClient.reset(new TcpConnection(pool_));
+	sessionClient.reset(new TcpConnection(pool_.get_io_service()));
 	sessionClient->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &sessionDispatcher, std::placeholders::_1, std::placeholders::_2);
 	sessionClient->errorHandler = std::bind(&SceneServer::disconnectSession, this, std::placeholders::_1, std::placeholders::_2);
 	ServerEntryPtr sessionEntry = serverlist_.getEntryByType(SESSIONSERVER);

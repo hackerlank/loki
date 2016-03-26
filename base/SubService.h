@@ -4,7 +4,6 @@
 #include "ServerList.h"
 #include <memory>
 #include <string>
-#include "script.h"
 #include "TcpConn.h"
 #include "Proto.h"
 
@@ -39,9 +38,6 @@ public:
 
 	void on_super_connected(connection_ptr conn);
 	*/
-	std::shared_ptr<script> get_script() { return script_; }
-	lua_State* getLuaState() { return script_->get_state(); }
-
 	bool StartServer();
 	virtual bool PostInit() { return true; }
 	virtual void registerScript(lua_State* L) {}
@@ -59,17 +55,14 @@ protected:
 	ProtoDispatcher superDispatcher_;
 	ProtoDispatcher dispatcher_;
 
-	std::shared_ptr<script> script_;
-
 	void handleConnectSuper(TcpConnPtr conn, const boost::system::error_code& error);
 	void disconnectSuper(TcpConnPtr conn, const boost::system::error_code& error);
 public:
 	TcpConnPtr superclient_;
 
 private:
-	std::string script_file_;
-
 	void _registerScript(lua_State* L);
+	std::string script_file_;
 };
 
 }

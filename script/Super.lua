@@ -105,3 +105,6 @@ function MsgParse(msg, len)
 
 	return true
 end
+
+require ("script/Login_proto")
+require ("script/Super_proto")

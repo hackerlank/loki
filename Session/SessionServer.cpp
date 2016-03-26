@@ -50,7 +50,7 @@ bool SessionServer::PostInit()
 	LOG(INFO)<<"Connect Database Success";
 
 	//connect RecordServer
-	recordClient.reset(new TcpConnection(pool_));
+	recordClient.reset(new TcpConnection(pool_.get_io_service()));
 	recordClient->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &recordDispatcher, std::placeholders::_1, std::placeholders::_2);
 	recordClient->errorHandler = std::bind(&SessionServer::disconnectRecord, this, std::placeholders::_1, std::placeholders::_2);
 	ServerEntryPtr recordEntry = serverlist_.getEntryByType(RECORDSERVER);

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+path=`pwd`
+${path}/Login/LoginServer -t 2 -d -f script/login.lua
+sleep 0.1
+${path}/Super/SuperServer -t 2 -d -f script/Super.lua
+sleep 0.1
+${path}/Record/RecordServer -t 2 -d -f script/login.lua
+sleep 0.1
+${path}/Session/SessionServer -t 2 -d -f script/login.lua
+sleep 0.1
+${path}/Scene/SceneServer -t 2 -d -f script/sceneserver.lua
+sleep 0.1
+${path}/Scene/SceneServer -t 2 -d -f script/sceneserver.lua
+sleep 0.1
+${path}/Gate/GateServer -t 2 -d -f script/gate.lua

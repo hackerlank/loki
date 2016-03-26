@@ -4,7 +4,6 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/asio.hpp>
 #include "glog/logging.h"
-#include "io_service_pool.h"
 #include "encryptor.h"
 #include <cassert>
 #include <memory>		//for std::shared_ptr std::enable_shared_from_this
@@ -26,7 +25,7 @@ namespace loki
 		public:
 			typedef std::shared_ptr<TcpConnection> pointer;
 
-			static pointer create(loki::io_service_pool& p)
+			static pointer create(boost::asio::io_service& p)
 			{
 				return pointer(new TcpConnection(p));
 			}
@@ -90,6 +89,21 @@ namespace loki
 					return true;
 				}
 			}
+			void ShutdownRead()
+			{
+				boost::system::error_code ignored_ec;
+				socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_receive, ignored_ec);
+			}
+			void ShutdownWrite()
+			{
+				boost::system::error_code ignored_ec;
+				socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_send, ignored_ec);
+			}
+			void Shutdown()
+			{
+				boost::system::error_code ignored_ec;
+				socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
+			}
 
 			const std::string GetRemoteIP()
 			{
@@ -102,8 +116,8 @@ namespace loki
 				}
 			}
 
-			TcpConnection(loki::io_service_pool& p)
-				: socket_(p.get_io_service()), pool(p), data_(nullptr)
+			TcpConnection(boost::asio::io_service& p)
+				: socket_(p), data_(nullptr)
 			{
 				id = ++ s_id;
 			}
@@ -175,15 +189,16 @@ namespace loki
 			} msgHeader;
 			std::vector<char> msgBuf;
 
-			loki::io_service_pool& pool;
 			std::shared_ptr<encryptor>  encryptor_;
 			uint32_t id;
+			uint32_t type;
 			void* data_;
 		public:
 			std::function<void (TcpConnection::pointer, const boost::system::error_code& error)> connectedHandler;
 			std::function<void (TcpConnection::pointer, const MessagePtr)> msgHandler;
 			std::function<void (TcpConnection::pointer, const boost::system::error_code& error)> errorHandler;
 			uint32_t GetID() const { return id; }
+			uint32_t GetType() const { return type; }
 			static uint32_t s_id;
 			void* GetData() { return data_; }
 			void SetData(void* data) { data_ = data; }

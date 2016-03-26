@@ -13,7 +13,7 @@ LIBS = $(COMMON_LIBS)
 CXXFLAGS = -g -std=gnu++11 $(SEAL_COMPILE_OPT)  -D_GNU_SOURCE -D_REENTRANT $(header_dir)
 CXXLFLAGS = -g -std=gnu++11 $(SEAL_COMPILE_OPT) -Wall $(lib_dir) $(LIBS)
 
-objects = LoginServer.o Main.o
+objects = LoginServer.o Main.o GYListManager.o
 
 SRCS = $(objects:%.o=%.cpp)
 DEPS = $(objects:%.o=.%.d)

@@ -44,7 +44,7 @@ void GateServer::disconnectSession(TcpConnPtr conn, const boost::system::error_c
 bool GateServer::PostInit()
 {
 	//connect RecordServer
-	recordClient.reset(new TcpConnection(pool_));
+	recordClient.reset(new TcpConnection(pool_.get_io_service()));
 	recordClient->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &recordDispatcher, std::placeholders::_1, std::placeholders::_2);
 	recordClient->errorHandler = std::bind(&GateServer::disconnectRecord, this, std::placeholders::_1, std::placeholders::_2);
 	ServerEntryPtr recordEntry = serverlist_.getEntryByType(RECORDSERVER);
@@ -68,7 +68,7 @@ bool GateServer::PostInit()
 	}
 
 	//connect SessionServer
-	sessionClient.reset(new TcpConnection(pool_));
+	sessionClient.reset(new TcpConnection(pool_.get_io_service()));
 	sessionClient->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &sessionDispatcher, std::placeholders::_1, std::placeholders::_2);
 	sessionClient->errorHandler = std::bind(&GateServer::disconnectSession, this, std::placeholders::_1, std::placeholders::_2);
 	ServerEntryPtr sessionEntry = serverlist_.getEntryByType(SESSIONSERVER);
@@ -103,7 +103,7 @@ bool GateServer::PostInit()
 	}
 	for (size_t i = 0;i<scenesentry.size(); ++i)
 	{
-		TcpConnPtr conn(new TcpConnection(pool_));
+		TcpConnPtr conn(new TcpConnection(pool_.get_io_service()));
 		auto data = new GateEntity(conn);
 		data->entryPtr = scenesentry[i];
 		conn->SetData(data);

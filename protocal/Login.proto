@@ -47,6 +47,7 @@ message t_GYList_FL {
 }
 
 //client verify , the very first user message
+
 message stUserVerifyVerCmd {
 	optional uint32 version = 1;
 }

@@ -15,6 +15,7 @@ SubService::SubService(io_service_pool& pool, const uint32_t server_type, const 
 	script_file_(script_file)
 {
 	sub_instance_ = this;
+	LOG(INFO)<<"SubService()";
 }
 
 void SubService::ExecuteMsg(TcpConnPtr conn, MessagePtr msg)
@@ -69,7 +70,7 @@ bool SubService::Init()
 
 	lua_tinker::table commontable = script_->get<lua_tinker::table>("Common");
 	//as client
-	superclient_.reset(new TcpConnection(pool_));
+	superclient_.reset(new TcpConnection(pool_.get_io_service()));
 	superclient_->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &superDispatcher_, std::placeholders::_1, std::placeholders::_2);
 	superclient_->errorHandler = std::bind(&SubService::disconnectSuper, this, std::placeholders::_1, std::placeholders::_2);
 

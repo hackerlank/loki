@@ -29,7 +29,7 @@ class TcpServer
 
 		void start_accept()
 		{
-			TcpConnection::pointer new_connection = TcpConnection::create(service_pool_);
+			TcpConnection::pointer new_connection = TcpConnection::create(service_pool_.get_io_service());
 
 			new_connection->msgHandler = msgHandler;
 			new_connection->connectedHandler = connectedHandler;

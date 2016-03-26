@@ -5,6 +5,9 @@
 #include "Login.pb.h"
 #include "ServerEntity.h"
 
+namespace Super
+{
+
 bool onStartup_Request(TcpConnPtr conn, std::shared_ptr<Super::t_Startup_Request> msg) {
 	if (conn->GetData() != nullptr) {
 		LOG(INFO)<<msg->GetTypeName()<<", should be the first message";
@@ -80,4 +83,5 @@ bool onUserVerifyVerCmd(TcpConnPtr conn, std::shared_ptr<::Login::stUserVerifyVe
 {
 	LOG(INFO)<<__func__;
 	return true;
+}
 }

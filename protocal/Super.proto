@@ -5,9 +5,6 @@ import "Login.proto";
 package Super;
 
 //区服务器登录消息
-message Login
-{
-}
 
 message ServerEntry
 {

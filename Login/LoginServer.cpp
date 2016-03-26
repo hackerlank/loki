@@ -2,11 +2,14 @@
 #include "Callback.h"
 #include "ServerType.h"
 #include "db.h"
+#include "UserCallback.h"
+#include "SuperCallback.h"
 
 using namespace loki;
 
 LoginServer::LoginServer(io_service_pool& p): service(p)
 {
+	new GYListManager();
 }
 
 bool LoginServer::Init(const std::string& filename)
@@ -58,6 +61,7 @@ bool LoginServer::Init(const std::string& filename)
 	s_dbConn->setSchema(common.get<const char*>("database"));
 	LOG(INFO)<<"Connect Database Success";
 
+	LoadAcl();
 	return true;
 }
 
@@ -73,9 +77,12 @@ void LoginServer::HandleErrorUserClient(TcpConnPtr conn, const boost::system::er
 
 void LoginServer::RegisterCallback()
 {
-	//dispatcher_.registerMsgCallback<Login::t_Startup_Request>(std::bind(onStartup_Request, std::placeholders::_1, std::placeholders::_2));
+	using namespace Login;
 
-	//dispatcher_.registerMsgCallback<Login::stUserVerifyVerCmd>(std::bind(onUserVerifyVerCmd, std::placeholders::_1, std::placeholders::_2));
+	superDispatcher_.registerMsgCallback<Login::ReqZoneLogin>(std::bind(OnZoneLogin, std::placeholders::_1, std::placeholders::_2));
+
+	userDispatcher_.registerMsgCallback<Login::stUserVerifyVerCmd>(std::bind(OnUserVerifyVerCmd, std::placeholders::_1, std::placeholders::_2));
+	userDispatcher_.registerMsgCallback<Login::stUserRequestLoginCmd>(std::bind(OnUserRequestLogin, std::placeholders::_1, std::placeholders::_2));
 }
 
 std::vector<int> LoginServer::getDependencyID(const int type) const
@@ -85,4 +92,46 @@ std::vector<int> LoginServer::getDependencyID(const int type) const
 		return it->second;
 	else
 		return std::vector<int>();
+}
+
+bool LoginServer::LoadAcl()
+{
+	loki::scoped_lock lock(mutex_);
+	aclmap.clear();
+
+	std::shared_ptr< sql::Statement > stmt(s_dbConn->createStatement());
+	std::shared_ptr< sql::ResultSet > res(stmt->executeQuery("SELECT * FROM `zonelist`"));
+	while(res->next())
+	{
+		std::shared_ptr<ACLZone> se(new ACLZone);
+
+		se->gamezone.game = res->getUInt("game");
+		se->gamezone.zone = res->getUInt("zone");
+		se->name = res->getString("name");
+		se->ip = res->getString("ip");
+		se->port = res->getUInt("port");
+		se->desc = res->getString("description");
+
+		if (res->getUInt("isuse"))
+		{
+			aclmap[se->gamezone] = se;
+		}
+
+	}
+	LOG(INFO)<<"load acl size="<<aclmap.size();
+	return true;
+}
+
+std::shared_ptr<ACLZone> LoginServer::getAcl(const std::string& ip, const uint16_t port)
+{
+	loki::scoped_lock lock(mutex_);
+	std::shared_ptr<ACLZone> ret;
+	for (auto it = aclmap.begin(); it != aclmap.end(); ++it)
+	{
+		if (ip == it->second->ip && port == it->second->port)
+		{
+			return it->second;
+		}
+	}
+	return ret;
 }

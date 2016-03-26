@@ -1,0 +1,4 @@
+#!/bin/bash
+
+path=`pwd`
+${path}/Login/LoginServer -t 2 -d -f script/login.lua

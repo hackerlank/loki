@@ -4,6 +4,7 @@
 #include "db.h"
 #include "UserCallback.h"
 #include "SuperCallback.h"
+#include "GYListManager.h"
 
 using namespace loki;
 
@@ -79,8 +80,12 @@ void LoginServer::RegisterCallback()
 {
 	using namespace Login;
 
+	//for SuperServer
 	superDispatcher_.registerMsgCallback<Login::ReqZoneLogin>(std::bind(OnZoneLogin, std::placeholders::_1, std::placeholders::_2));
+	superDispatcher_.registerMsgCallback<Login::t_GYList_FL>(std::bind(OnGYList_FL, std::placeholders::_1, std::placeholders::_2));
+	superDispatcher_.registerMsgCallback<Login::t_NewSession_Session>(std::bind(onNewSession_Session, std::placeholders::_1, std::placeholders::_2));
 
+	//for client
 	userDispatcher_.registerMsgCallback<Login::stUserVerifyVerCmd>(std::bind(OnUserVerifyVerCmd, std::placeholders::_1, std::placeholders::_2));
 	userDispatcher_.registerMsgCallback<Login::stUserRequestLoginCmd>(std::bind(OnUserRequestLogin, std::placeholders::_1, std::placeholders::_2));
 }

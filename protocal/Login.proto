@@ -26,6 +26,7 @@ message t_NewLoginSession
 	optional string ip = 5;
 	optional uint32 port = 6;
 	optional uint64 logintempid = 7;		//LoginTask id
+	optional string key = 8;				
 }
 
 message PlayerLogin

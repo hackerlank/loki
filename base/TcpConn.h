@@ -162,7 +162,7 @@ namespace loki
 				if (!error)
 				{
 					uint32_t msgLength = msgHeader.flag & 0x0000ffff;
-					LOG(INFO)<<"Header size = "<<msgLength<<", flag = "<<msgHeader.flag;
+					//LOG(INFO)<<"Header size = "<<msgLength<<", flag = "<<msgHeader.flag;
 					if (msgLength > 0)
 					{
 						msgBuf.resize(msgLength);

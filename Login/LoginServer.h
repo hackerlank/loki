@@ -23,6 +23,7 @@ class LoginServer : public Singleton<LoginServer>, service
 		bool Init(const std::string& file);
 
 		ConnContainer serverConns;
+		ConnContainer userConns;
 
 		std::shared_ptr<TcpServer> server;
 		ProtoDispatcher superDispatcher_;

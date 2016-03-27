@@ -132,7 +132,7 @@ bool TcpConnection::ParseBuffer()
 		buf.swap(msgBuf);
 	}
 	const uint32_t msgId = *(const uint32_t*)(msgBuf.data());
-	LOG(INFO)<<"Msg id = "<<msgId;
+	//LOG(INFO)<<"Msg id = "<<msgId;
 	std::string msgName(lua_tinker::call<const char*>(service::Instance()->GetLuaState(), "GetMessageNameByID", msgId));
 	if (msgName.empty())
 	{
@@ -145,7 +145,7 @@ bool TcpConnection::ParseBuffer()
 		LOG(INFO)<<"Receive Msg Length = "<<msgBuf.size()<<", protoBufLen = "<<protoBuffLen;
 		return false;
 	}
-	LOG(INFO)<<"Msg name = "<<msgName;
+	//LOG(INFO)<<"Msg name = "<<msgName;
 	MessagePtr message(Proto::CreateMessage(msgName));
 	if (!message)
 		return false;

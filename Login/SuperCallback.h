@@ -25,14 +25,14 @@ namespace Login
 		{
 			context->set_id(zone->gamezone.id);	//跟区下面的服务器使用不同的方式表示id
 			context->zoneInfo = zone;
-			LOG(INFO)<<__func__<<", ok:"<<conn->GetRemoteIP()<<",openport="<<msg->openport();
+			LOG(INFO)<<__func__<<", ok:"<<conn->GetRemoteIP()<<",openport="<<msg->openport()<<", game = "<<zone->gamezone.game<<", zone = "<<zone->gamezone.zone;
 
 			Login::t_LoginFL_OK ret;
 			ret.set_game(zone->gamezone.game);
 			ret.set_zone(zone->gamezone.zone);
 			ret.set_name(zone->name);
 			conn->SendMessage(&ret);
-			LoginServer::instance().serverConns.Add(conn);
+			LoginServer::instance().serverConns.Add(zone->gamezone.id, conn);
 			return true;
 		}
 		else
@@ -42,27 +42,31 @@ namespace Login
 		}
 	}
 
-	/*
-	//receive gateway info
-	bool onGYList_FL(connection_ptr conn, const std::shared_ptr<Login::t_GYList_FL>& msg)
+	bool OnGYList_FL(TcpConnPtr conn, std::shared_ptr<Login::t_GYList_FL> msg)
 	{
-		ServerTaskPtr context(boost::any_cast<ServerTaskPtr>(conn->get_context()));
-		GYListManager::instance().put(context->gamezone(), msg);	
+		SuperEntity* context = static_cast<SuperEntity*>(conn->GetData());
+		if (context == nullptr)
+		{
+			LOG(INFO)<<__func__<<", context null";
+			return false;
+		}
+		GYListManager::instance().put(context->zoneInfo->gamezone, msg);	
 		LOG(INFO)<<__func__<<", serverid="<<msg->serverid()<<",ip="<<msg->ip()<<",port="<<msg->port()<<",num_online="<<msg->num_online()<<",version="<<msg->version();
 		return true;
 	}
 
-	bool onNewSession_Session(connection_ptr conn, const std::shared_ptr<Login::t_NewSession_Session>& msg)
+	bool onNewSession_Session(TcpConnPtr conn, std::shared_ptr<Login::t_NewSession_Session> msg)
 	{
-		//TODO
 		stServerReturnLoginSuccessCmd send;
 		send.set_accid(msg->session().accid());
 		send.set_ip(msg->session().ip());
 		send.set_port(msg->session().port());
 		send.set_logintempid(msg->session().logintempid());
+		send.set_key(msg->session().key());
+		LOG(INFO)<<"send ip and port and key to client todo";
 		//send to user
-		LoginServer::instance().broadcastByID(msg->session().logintempid(), &send);
+		//LoginServer::instance().broadcastByID(msg->session().logintempid(), &send);
+		LoginServer::instance().userConns.broadcastByID(msg->session().logintempid(), &send);
 		return true;
 	}
-	*/
 }

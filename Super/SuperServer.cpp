@@ -27,16 +27,17 @@ bool SuperServer::Init(const std::string& filename)
 
 	lua_tinker::table common = script_->get<lua_tinker::table>("Common");
 	port_ = (uint16_t)atoi(common.get<const char*>("super_port"));
+	ip_ = common.get<const char*>("super_ip");
 	try {
-		server.reset(new TcpServer(pool_, common.get<const char*>("super_ip"), common.get<const char*>("super_port")));
+		server.reset(new TcpServer(pool_, ip_, common.get<const char*>("super_port")));
+		server->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &dispatcher_, std::placeholders::_1, std::placeholders::_2);
+		server->start_accept();
 	}
 	catch(...)
 	{
 		LOG(ERROR)<<"Create TcpServer Failed, normally it is that the port is in use";
 		return false;
 	}
-	server->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &dispatcher_, std::placeholders::_1, std::placeholders::_2);
-	server->start_accept();
 
 	LoadServerList();
 
@@ -74,6 +75,7 @@ void SuperServer::RegisterCallback()
 	dispatcher_.registerMsgCallback<Super::t_Startup_Request>(std::bind(onStartup_Request, std::placeholders::_1, std::placeholders::_2));
 
 	loginDispatcher_.registerMsgCallback<Login::t_LoginFL_OK>(std::bind(OnRetZoneLogin, std::placeholders::_1, std::placeholders::_2));
+	loginDispatcher_.registerMsgCallback<Login::t_NewSession_Session>(std::bind(OnPreLoginServer, std::placeholders::_1, std::placeholders::_2));
 }
 
 void SuperServer::LoadServerList()

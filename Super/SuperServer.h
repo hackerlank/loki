@@ -26,6 +26,7 @@ class SuperServer : public Singleton<SuperServer>, service
 		void RegisterCallback();
 
 		uint16_t port_{0};
+		std::string ip_;
 		ServerList serverlist_;
 		void LoadServerList();
 		std::vector<int> getDependencyID(const int type) const;

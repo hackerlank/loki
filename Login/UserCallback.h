@@ -6,7 +6,6 @@
 #include "GYListManager.h"
 #include "login_return.h"
 #include "gamezone.h"
-//#include "ServerManager.h"
 
 namespace Login
 {
@@ -94,9 +93,14 @@ namespace Login
 		tCmd.mutable_session()->set_ip(gate->ip());
 		tCmd.mutable_session()->set_port(gate->port());
 		tCmd.mutable_session()->set_logintempid(conn->GetID());
-		//发送到SuperServer连接
-		//ServerManager::instance().broadcastByID(zone.id, &tCmd);
-		LoginServer::instance().serverConns.broadcastByID(zone.id, &tCmd);
+		tCmd.mutable_session()->set_key(boost::lexical_cast<std::string>(rand()));
+
+		LoginServer::instance().userConns.Add(conn->GetID(), conn);
+		if (!LoginServer::instance().serverConns.broadcastByID(zone.id, &tCmd))
+		{
+			LOG(ERROR)<<"Send To No one";
+		}
+		LOG(INFO)<<"Login verify ok, send info to game server to continue verify";
 		return true;
 	}
 	catch (sql::SQLException &e)

@@ -17,9 +17,9 @@ namespace loki
 class ConnContainer
 {
 public:
-	bool Add(const TcpConnPtr& ctx)
+	bool Add(const uint32_t id, const TcpConnPtr& ctx)
 	{
-		auto ret = container.insert(std::make_pair(ctx->GetID(), ctx));
+		auto ret = container.insert(std::make_pair(id, ctx));
 		return (ret.second);
 	}
 	void RemoveByID(const uint32_t id)

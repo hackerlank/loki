@@ -8,18 +8,19 @@ end
 
 
 Common = {
-	super_ip = "127.0.0.1",
+	super_ip = "120.25.79.113",
 	super_port = "10000",
 
 	hostname="tcp://127.0.0.1:3306",
 	user="root",
 	password="test@123",
 	database="loki",
+	PublicIP = "120.25.79.113",
 }
 
 LoginServer = {
 	login_port = "10010",
-	login_ip = "127.0.0.1",
+	login_ip = Common.PublicIP,
 	server_port = "10011",
 	server_ip = "127.0.0.1",
 }

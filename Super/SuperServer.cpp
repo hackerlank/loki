@@ -2,6 +2,7 @@
 #include "Callback.h"
 #include "ServerType.h"
 #include "LoginCallback.h"
+#include "LoginCertification.h"
 
 using namespace loki;
 
@@ -18,6 +19,7 @@ bool SuperServer::Init(const std::string& filename)
 		LOG(ERROR)<<"Lack of scriptfile";
 		return false;
 	}
+	new LoginCertification();
 	script_.reset(new script());       
 	if (!script_->dofile(filename))
 	{                                  
@@ -31,6 +33,8 @@ bool SuperServer::Init(const std::string& filename)
 	try {
 		server.reset(new TcpServer(pool_, ip_, common.get<const char*>("super_port")));
 		server->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &dispatcher_, std::placeholders::_1, std::placeholders::_2);
+		server->connectedHandler = std::bind(&SuperServer::OnAccept, this, std::placeholders::_1);
+		server->errorHandler = std::bind(&SuperServer::OnError, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 		server->start_accept();
 	}
 	catch(...)
@@ -44,35 +48,40 @@ bool SuperServer::Init(const std::string& filename)
 	lua_tinker::table superTable = script_->get<lua_tinker::table>("SuperServer");
 	loginClient.reset(new TcpConnection(pool_.get_io_service()));
 	loginClient->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &loginDispatcher_, std::placeholders::_1, std::placeholders::_2);
-	loginClient->errorHandler = std::bind(&SuperServer::disconnectLogin, this, std::placeholders::_1, std::placeholders::_2);
-	loginClient->connectedHandler = std::bind(&SuperServer::handleConnectLogin, this, std::placeholders::_1, std::placeholders::_2);
+	loginClient->errorHandler = std::bind(&SuperServer::disconnectLogin, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+	loginClient->connectedHandler = std::bind(&SuperServer::handleConnectLogin, this, std::placeholders::_1);
 	loginClient->AsyncConnect(superTable.get<const char*>("login_ip"), superTable.get<uint16_t>("login_port"));
 	return true;
 }
 
-void SuperServer::disconnectLogin(TcpConnPtr conn, const boost::system::error_code& err)
+void SuperServer::OnAccept(TcpConnPtr conn)
 {
+	LOG(INFO)<<__func__;
 }
 
-void SuperServer::handleConnectLogin(TcpConnPtr conn, const boost::system::error_code& err)
+void SuperServer::OnError(TcpConnPtr conn, const boost::system::error_code& err, const std::string& hint)
 {
-	if (!err)
-	{
-		LOG(INFO)<<"Connect to login server success";
-		Login::ReqZoneLogin send;
-		send.set_openport(port_);
-		conn->SendMessage(&send);
-	}
-	else
-	{
-		LOG(INFO)<<"Connect to login server failed";
-	}
+	LOG(INFO)<<__func__<<",hint="<<hint;
+}
+
+void SuperServer::disconnectLogin(TcpConnPtr conn, const boost::system::error_code& err, const std::string& hint)
+{
+	LOG(INFO)<<__func__;
+}
+
+void SuperServer::handleConnectLogin(TcpConnPtr conn)
+{
+	LOG(INFO)<<"Connect to login server success";
+	Login::ReqZoneLogin send;
+	send.set_openport(port_);
+	conn->SendMessage(&send);
 }
 
 void SuperServer::RegisterCallback()
 {
 	using namespace Super;
 	dispatcher_.registerMsgCallback<Super::t_Startup_Request>(std::bind(onStartup_Request, std::placeholders::_1, std::placeholders::_2));
+	dispatcher_.registerMsgCallback<Super::stLoginToGame>(std::bind(OnClientLogin, std::placeholders::_1, std::placeholders::_2));	//client login
 
 	loginDispatcher_.registerMsgCallback<Login::t_LoginFL_OK>(std::bind(OnRetZoneLogin, std::placeholders::_1, std::placeholders::_2));
 	loginDispatcher_.registerMsgCallback<Login::t_NewSession_Session>(std::bind(OnPreLoginServer, std::placeholders::_1, std::placeholders::_2));

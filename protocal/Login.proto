@@ -27,6 +27,7 @@ message t_NewLoginSession
 	optional uint32 port = 6;
 	optional uint64 logintempid = 7;		//LoginTask id
 	optional string key = 8;				
+	optional string account = 9;
 }
 
 message PlayerLogin
@@ -72,4 +73,5 @@ message stServerReturnLoginSuccessCmd {
 	optional string ip = 3;
 	optional uint32 port = 4;
 	optional string key = 5;
+	optional string account = 6;
 }

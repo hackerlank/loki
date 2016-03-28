@@ -30,14 +30,14 @@ message t_Startup_Response
 	repeated ServerEntry entry = 2;
 }
 
-
-message t_NewSession_Gateway {
-	optional .Login.t_NewLoginSession session = 1;
+//login to game server
+message stLoginToGame
+{
+	optional string account = 1;
+	optional string key = 2;
 }
 
-message t_RQGYList_Gateway {
-}
-
-message t_GYList_Gateway {
-	optional .Login.t_GYList_FL gateinfo = 1;
+message stLoginGameServerResult
+{
+	optional uint32 ret = 1;
 }

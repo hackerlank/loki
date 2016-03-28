@@ -63,6 +63,7 @@ namespace Login
 		send.set_port(msg->session().port());
 		send.set_logintempid(msg->session().logintempid());
 		send.set_key(msg->session().key());
+		send.set_account(msg->session().account());
 		LOG(INFO)<<"send ip and port and key to client todo";
 		//send to user
 		//LoginServer::instance().broadcastByID(msg->session().logintempid(), &send);

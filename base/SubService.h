@@ -44,8 +44,8 @@ public:
 	virtual void RegisterCallback() {}
 
 	virtual void ExecuteMsg(TcpConnPtr, MessagePtr);
-	virtual void HandleError(TcpConnPtr, const boost::system::error_code& );
-	virtual void SyncHandleError(TcpConnPtr, const boost::system::error_code& ){}
+	virtual void HandleError(TcpConnPtr, const boost::system::error_code& , const std::string&);
+	virtual void SyncHandleError(TcpConnPtr, const boost::system::error_code& , const std::string&){}
 protected:
 	uint32_t type_ = 0;
 	std::shared_ptr<TcpServer> server_;    //for client
@@ -55,8 +55,8 @@ protected:
 	ProtoDispatcher superDispatcher_;
 	ProtoDispatcher dispatcher_;
 
-	void handleConnectSuper(TcpConnPtr conn, const boost::system::error_code& error);
-	void disconnectSuper(TcpConnPtr conn, const boost::system::error_code& error);
+	void handleConnectSuper(TcpConnPtr conn);
+	void disconnectSuper(TcpConnPtr conn, const boost::system::error_code& error, const std::string& hint);
 public:
 	TcpConnPtr superclient_;
 

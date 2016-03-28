@@ -4,6 +4,7 @@
 #include "Super.pb.h"
 #include "Login.pb.h"
 #include "ServerEntity.h"
+#include "LoginCertification.h"
 
 namespace Super
 {
@@ -84,4 +85,21 @@ bool onUserVerifyVerCmd(TcpConnPtr conn, std::shared_ptr<::Login::stUserVerifyVe
 	LOG(INFO)<<__func__;
 	return true;
 }
+
+bool OnClientLogin(TcpConnPtr conn, std::shared_ptr<Super::stLoginToGame> msg)
+{
+	auto data = LoginCertification::instance().Get(msg->account());
+	if (!data)
+	{
+		LOG(INFO)<<"not verified by LoginServer";
+		return false;
+	}
+	LoginCertification::instance().Remove(msg->account());
+	LOG(INFO)<<"stLoginToGame account = "<<msg->account()<<", key="<<msg->key();
+	stLoginGameServerResult send;
+	send.set_ret(0);
+	conn->SendMessage(&send);
+	return true;
+}
+
 }

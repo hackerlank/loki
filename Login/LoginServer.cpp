@@ -35,12 +35,14 @@ bool LoginServer::Init(const std::string& filename)
 		//for SuperServer
 		server.reset(new TcpServer(pool_, loginServer.get<const char*>("server_ip"), loginServer.get<const char*>("server_port")));
 		server->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &superDispatcher_, std::placeholders::_1, std::placeholders::_2);
-		server->errorHandler = std::bind(&LoginServer::HandleErrorSuperClient, this, std::placeholders::_1, std::placeholders::_2);
+		server->connectedHandler = std::bind(&LoginServer::OnAcceptServer, this, std::placeholders::_1);
+		server->errorHandler = std::bind(&LoginServer::OnErrorServer, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 		server->start_accept();
 
 		userServer.reset(new TcpServer(pool_, loginServer.get<const char*>("login_ip"), loginServer.get<const char*>("login_port")));
 		userServer->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &userDispatcher_, std::placeholders::_1, std::placeholders::_2);
-		userServer->errorHandler = std::bind(&LoginServer::HandleErrorUserClient, this, std::placeholders::_1, std::placeholders::_2);
+		userServer->errorHandler = std::bind(&LoginServer::OnErrorClient, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+		userServer->connectedHandler = std::bind(&LoginServer::OnAcceptClient, this, std::placeholders::_1);
 		userServer->start_accept();
 	}
 	catch(...)
@@ -66,13 +68,25 @@ bool LoginServer::Init(const std::string& filename)
 	return true;
 }
 
-void LoginServer::HandleErrorSuperClient(TcpConnPtr conn, const boost::system::error_code& err)
+void LoginServer::OnAcceptServer(TcpConnPtr conn)
 {
+	LOG(INFO)<<__func__;
+}
+
+void LoginServer::OnAcceptClient(TcpConnPtr conn)
+{
+	LOG(INFO)<<__func__;
+}
+
+void LoginServer::OnErrorServer(TcpConnPtr conn, const boost::system::error_code& err, const std::string& hint)
+{
+	LOG(INFO)<<__func__;
 	//remove connection from container
 }
 
-void LoginServer::HandleErrorUserClient(TcpConnPtr conn, const boost::system::error_code& err)
+void LoginServer::OnErrorClient(TcpConnPtr conn, const boost::system::error_code& err, const std::string& hint)
 {
+	LOG(INFO)<<__func__;
 	//remove connection from container
 }
 

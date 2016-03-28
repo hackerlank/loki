@@ -94,6 +94,7 @@ namespace Login
 		tCmd.mutable_session()->set_port(gate->port());
 		tCmd.mutable_session()->set_logintempid(conn->GetID());
 		tCmd.mutable_session()->set_key(boost::lexical_cast<std::string>(rand()));
+		tCmd.mutable_session()->set_account(msg->account());
 
 		LoginServer::instance().userConns.Add(conn->GetID(), conn);
 		if (!LoginServer::instance().serverConns.broadcastByID(zone.id, &tCmd))

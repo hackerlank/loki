@@ -215,5 +215,5 @@ void TcpConnection::SendMessage(const google::protobuf::Message* msg)
 void TcpConnection::handleWrite(const boost::system::error_code& error, size_t /*bytes_transferred*/)
 {
 	if (error)
-		handleError(error);
+		handleError(error, "write");
 }

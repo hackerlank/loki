@@ -23,9 +23,9 @@ void SubService::ExecuteMsg(TcpConnPtr conn, MessagePtr msg)
 	get_logic_service().post(boost::bind(&ProtoDispatcher::onProtobufMessage, &dispatcher_, conn, msg));
 }
 
-void SubService::HandleError(TcpConnPtr conn, const boost::system::error_code& err)
+void SubService::HandleError(TcpConnPtr conn, const boost::system::error_code& err, const std::string& hint)
 {
-	get_logic_service().post(boost::bind(&SubService::SyncHandleError, this, conn, err));
+	get_logic_service().post(boost::bind(&SubService::SyncHandleError, this, conn, err, hint));
 }
 
 //{ from super
@@ -72,9 +72,9 @@ bool SubService::Init()
 	//as client
 	superclient_.reset(new TcpConnection(pool_.get_io_service()));
 	superclient_->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &superDispatcher_, std::placeholders::_1, std::placeholders::_2);
-	superclient_->errorHandler = std::bind(&SubService::disconnectSuper, this, std::placeholders::_1, std::placeholders::_2);
+	superclient_->errorHandler = std::bind(&SubService::disconnectSuper, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 
-	superclient_->connectedHandler = std::bind(&SubService::handleConnectSuper, this, std::placeholders::_1, std::placeholders::_2);
+	superclient_->connectedHandler = std::bind(&SubService::handleConnectSuper, this, std::placeholders::_1);
 	superclient_->AsyncConnect(commontable.get<const char*>("super_ip"), commontable.get<uint16_t>("super_port"));
 
 	///Register super msg
@@ -85,25 +85,21 @@ bool SubService::Init()
 	return true;
 }
 
-void SubService::disconnectSuper(TcpConnPtr conn, const boost::system::error_code& error)
+void SubService::disconnectSuper(TcpConnPtr conn, const boost::system::error_code& error, const std::string& hint)
 {
 	handle_stop();
 }
 
-void SubService::handleConnectSuper(TcpConnPtr conn, const boost::system::error_code& error)
+void SubService::handleConnectSuper(TcpConnPtr conn)
 {
-	if (!error)
-	{
-		LOG(INFO)<<"Connected to Server success : "<<conn->GetRemoteIP();
-		Super::t_Startup_Request send;
-		send.set_type(get_type());
-		superclient_->SendMessage(&send);
-	}
-	else
-	{
+	LOG(INFO)<<"Connected to Server success : "<<conn->GetRemoteIP();
+	Super::t_Startup_Request send;
+	send.set_type(get_type());
+	superclient_->SendMessage(&send);
+		/*
 		LOG(INFO)<<"Connected to Server failed : "<<conn->GetRemoteIP();
 		handle_stop();
-	}
+		*/
 }
 
 bool SubService::StartServer()
@@ -122,7 +118,7 @@ bool SubService::StartServer()
 	//server_->msgHandler = std::bind(&ProtoDispatcher::onProtobufMessage, &dispatcher_, std::placeholders::_1, std::placeholders::_2);
 	//synchronize process message
 	server_->msgHandler = std::bind(&SubService::ExecuteMsg, this, std::placeholders::_1, std::placeholders::_2);
-	server_->errorHandler = std::bind(&SubService::HandleError, this, std::placeholders::_1, std::placeholders::_2);
+	server_->errorHandler = std::bind(&SubService::HandleError, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 	server_->start_accept();
 
 	started_ = true;

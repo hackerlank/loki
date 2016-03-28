@@ -40,7 +40,7 @@ namespace loki
 				return socket_;
 			}
 
-			void Start()
+			void Start(bool openPassive = true)
 			{
 				boost::asio::socket_base::keep_alive option1(true);
 				socket_.set_option(option1);
@@ -48,6 +48,10 @@ namespace loki
 				boost::asio::ip::tcp::no_delay option(true);
 				socket_.set_option(option);
 
+				LOG(INFO)<<"Socket started remoteip = "<<GetRemoteIP()<<" remote Port="<<GetRemotePort()<<", "<< (openPassive?"paasive":"active");
+
+				if (connectedHandler)
+					connectedHandler(shared_from_this());
 				async_read_header();
 			}
 			void async_read_header()
@@ -85,7 +89,7 @@ namespace loki
 				socket_.connect(endpoint, ec);
 				if (ec) return false;
 				else {
-					Start();
+					Start(false);
 					return true;
 				}
 			}
@@ -116,6 +120,18 @@ namespace loki
 				}
 			}
 
+			uint16_t GetRemotePort()
+			{
+				boost::system::error_code ec;
+				boost::asio::ip::tcp::socket::endpoint_type endpoint = socket_.remote_endpoint(ec);
+				if (ec)
+					return 0;
+				else {
+					return endpoint.port();
+				}
+
+			}
+
 			TcpConnection(boost::asio::io_service& p)
 				: socket_(p), data_(nullptr)
 			{
@@ -131,10 +147,10 @@ namespace loki
 			{
 				if (!error) {
 					//async connect ok
-					Start();
+					Start(false);
 				}
-				if (connectedHandler)
-					connectedHandler(shared_from_this(), error);
+				else
+					handleError(error, "connect");
 			}
 
 			void handle_read(const boost::system::error_code& error, size_t bytes_transferred)
@@ -143,8 +159,7 @@ namespace loki
 				{
 					if (!ParseBuffer())	//Failed
 					{
-						LOG(INFO)<<"Parse Buffer Error";
-						handleError(error);
+						handleError(error, "parse");
 					}
 					else
 					{
@@ -153,7 +168,7 @@ namespace loki
 				}
 				else
 				{
-					handleError(error);
+					handleError(error, "read");
 				}
 			}
 			bool ParseBuffer();
@@ -171,14 +186,16 @@ namespace loki
 				}
 				else
 				{
-					handleError(error);
+					handleError(error, "read");
 				}
 			}
 
-			void handleError(const boost::system::error_code& error)
+			void handleError(const boost::system::error_code& error, const std::string& hint)
 			{
 				if (errorHandler)
-					errorHandler(shared_from_this(), error);
+					errorHandler(shared_from_this(), error, hint);
+				else
+					LOG(INFO)<<"Socket Error :"<<hint;
 			}
 
 			tcp::socket socket_;
@@ -194,9 +211,9 @@ namespace loki
 			uint32_t type;
 			void* data_;
 		public:
-			std::function<void (TcpConnection::pointer, const boost::system::error_code& error)> connectedHandler;
+			std::function<void (TcpConnection::pointer)> connectedHandler;
 			std::function<void (TcpConnection::pointer, const MessagePtr)> msgHandler;
-			std::function<void (TcpConnection::pointer, const boost::system::error_code& error)> errorHandler;
+			std::function<void (TcpConnection::pointer, const boost::system::error_code& error, const std::string& hint)> errorHandler;
 			uint32_t GetID() const { return id; }
 			uint32_t GetType() const { return type; }
 			static uint32_t s_id;

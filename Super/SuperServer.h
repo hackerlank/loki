@@ -39,11 +39,13 @@ class SuperServer : public Singleton<SuperServer>, service
 		TcpConnPtr loginClient;
 		ProtoDispatcher loginDispatcher_;
 
-		void disconnectLogin(TcpConnPtr conn, const boost::system::error_code& err);
-		void handleConnectLogin(TcpConnPtr conn, const boost::system::error_code& err);
+		void disconnectLogin(TcpConnPtr conn, const boost::system::error_code& err, const std::string& hint);
+		void handleConnectLogin(TcpConnPtr conn);
 
 		uint32_t zone_;
 		uint32_t game_;
 		std::string name_;
 
+		void OnAccept(TcpConnPtr conn);
+		void OnError(TcpConnPtr conn, const boost::system::error_code& err, const std::string& hint);
 };

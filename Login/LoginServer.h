@@ -27,7 +27,6 @@ class LoginServer : public Singleton<LoginServer>, service
 
 		std::shared_ptr<TcpServer> server;
 		ProtoDispatcher superDispatcher_;
-		void HandleErrorSuperClient(TcpConnPtr conn, const boost::system::error_code& err);
 		void RegisterCallback();
 
 		uint16_t port_{0};
@@ -40,7 +39,13 @@ class LoginServer : public Singleton<LoginServer>, service
 		//for user
 		std::shared_ptr<TcpServer> userServer;
 		ProtoDispatcher userDispatcher_;
-		void HandleErrorUserClient(TcpConnPtr conn, const boost::system::error_code& err);
+		void OnErrorClient(TcpConnPtr conn, const boost::system::error_code& err, const std::string& hint);
+
+		void OnErrorServer(TcpConnPtr conn, const boost::system::error_code& err, const std::string& hint);
+
+		void OnAcceptClient(TcpConnPtr Conn);
+		void OnAcceptServer(TcpConnPtr Conn);
+
 
 		bool LoadAcl();
 

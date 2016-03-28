@@ -57,8 +57,8 @@ class TcpServer
 
 	public:
 		std::function<void (TcpConnPtr, const MessagePtr)> msgHandler;
-		std::function<void (TcpConnection::pointer, const boost::system::error_code& error)> connectedHandler;
-		std::function<void (TcpConnection::pointer, const boost::system::error_code& error)> errorHandler;
+		std::function<void (TcpConnection::pointer)> connectedHandler;
+		std::function<void (TcpConnection::pointer, const boost::system::error_code& error, const std::string&)> errorHandler;
 };
 
 }

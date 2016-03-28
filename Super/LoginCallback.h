@@ -4,6 +4,7 @@
 #include "Login.pb.h"
 #include "Super.pb.h"
 #include <memory>
+#include "LoginCertification.h"
 
 namespace Super
 {
@@ -18,7 +19,9 @@ namespace Super
 		ServerManager::instance().broadcastByID(send.session().gatewayid(), &send);
 		*/
 		//TODO: check if user is already in game
-		LOG(INFO)<<__func__<<"accid = "<<msg->session().accid()<<", key="<<msg->session().key();
+		auto session = msg->session();
+		LOG(INFO)<<__func__<<"accid = "<<session.accid()<<", key="<<session.key()<<",account="<<session.account();
+		LoginCertification::instance().Add(session.account(), session.key(), session.accid());
 		conn->SendMessage(msg);
 		return true;
 	}

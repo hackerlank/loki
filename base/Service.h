@@ -10,11 +10,11 @@
 namespace loki
 {
 
-class service : boost::noncopyable
+class Service : boost::noncopyable
 {
 public:
-	service(io_service_pool& pool);
-	static service * Instance() { return instance_; }
+	Service(io_service_pool& pool);
+	static Service * Instance() { return instance_; }
 	void setup_signal_callback()
 	{
 		::signal(SIGPIPE, SIG_IGN);
@@ -28,9 +28,9 @@ public:
 #if defined(SIGQUIT)
 		signals_.add(SIGQUIT);
 #endif // defined(SIGQUIT)
-		signals_.async_wait(boost::bind(&service::handle_stop, this));
+		signals_.async_wait(boost::bind(&Service::handle_stop, this));
 	}
-	virtual ~service() { }
+	virtual ~Service() { }
 	virtual void handle_stop() 
 	{ 
 		pool_.stop(); 
@@ -55,7 +55,7 @@ protected:
 	int version_ = 0;
 	std::shared_ptr<script> script_;
 
-	static service* instance_;
+	static Service* instance_;
 
 	boost::asio::deadline_timer timer_;
 	bool timerWaiting;

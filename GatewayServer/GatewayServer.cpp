@@ -189,7 +189,7 @@ void GatewayServer::handle_stop()
 	}
 	sceneclients_.clear();
 	*/
-	service::handle_stop();
+	Service::handle_stop();
 
 	//delete SceneClientManager::instance_ptr();
 	//delete LoginSessionManager::instance_ptr();

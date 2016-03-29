@@ -10,7 +10,7 @@
 namespace loki
 {
 
-class SubService : public service
+class SubService : public Service
 {
 private:
 	static SubService* sub_instance_;

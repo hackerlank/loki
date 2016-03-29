@@ -10,7 +10,7 @@ namespace loki
 SubService* SubService::sub_instance_ = nullptr;
 
 SubService::SubService(io_service_pool& pool, const uint32_t server_type, const std::string& script_file)
-	:service(pool),
+	:Service(pool),
 	type_(server_type),
 	script_file_(script_file)
 {

@@ -3,7 +3,7 @@
  * \version  $Id: sub_service.h 0 2015-04-03 11:43:34 xxx $
  * \author  liuqing,liuqing1@ztgame.com
  * \date Fri Apr  3 11:43:34 2015
- * \brief sub service
+ * \brief sub Service
  */
 
 #pragma once
@@ -18,7 +18,7 @@
 namespace loki
 {
 
-class sub_service : public service
+class sub_service : public Service
 {
 private:
 	static sub_service* sub_instance_;

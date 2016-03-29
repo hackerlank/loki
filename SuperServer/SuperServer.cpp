@@ -11,7 +11,7 @@ using namespace std;
 using namespace loki;
 
 SuperServer::SuperServer(const std::string& script_file, io_service_pool& pool)
-	:service(pool),
+	:Service(pool),
 	codec_(std::bind(&SuperServer::do_msg, this, std::placeholders::_1, std::placeholders::_2)),
 	script_file_(script_file)
 {

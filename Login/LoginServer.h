@@ -15,7 +15,7 @@
 
 using namespace loki;
 
-class LoginServer : public Singleton<LoginServer>, service
+class LoginServer : public Singleton<LoginServer>, Service
 {
 	public:
 		std::map<int, std::vector<int> > serverSequence; //type->types

@@ -133,7 +133,7 @@ bool TcpConnection::ParseBuffer()
 	}
 	const uint32_t msgId = *(const uint32_t*)(msgBuf.data());
 	//LOG(INFO)<<"Msg id = "<<msgId;
-	std::string msgName(lua_tinker::call<const char*>(service::Instance()->GetLuaState(), "GetMessageNameByID", msgId));
+	std::string msgName(lua_tinker::call<const char*>(Service::Instance()->GetLuaState(), "GetMessageNameByID", msgId));
 	if (msgName.empty())
 	{
 		LOG(INFO)<<"Unknown msgID = "<<msgId;
@@ -191,7 +191,7 @@ void TcpConnection::SendMessage(const google::protobuf::Message* msg)
 {
 	std::shared_ptr<buffer> buff(new buffer(65536));
 	const std::string& typeName = msg->GetTypeName();
-	const uint32_t msgId = lua_tinker::call<const uint32_t>(service::Instance()->GetLuaState(), "GetMessageIDByName", typeName.c_str());
+	const uint32_t msgId = lua_tinker::call<const uint32_t>(Service::Instance()->GetLuaState(), "GetMessageIDByName", typeName.c_str());
 	if (msgId == 0)
 	{
 		LOG(INFO)<<"SendMessage Error Unregister Message "<<typeName;

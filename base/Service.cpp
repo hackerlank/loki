@@ -6,26 +6,26 @@ using namespace boost::posix_time;
 
 namespace loki
 {
-	service* service::instance_ = nullptr;
+	Service* Service::instance_ = nullptr;
 
-	service::service(io_service_pool& pool) :
+	Service::Service(io_service_pool& pool) :
 		pool_(pool),
 		signals_(pool_.get_io_service()),
 		timer_(pool_.get_logic_service())
 	{
 		instance_ = this;
-		LOG(INFO)<<"service create";
+		LOG(INFO)<<"Service create";
 		timerWaiting = false;
 	}
 
-	void service::StartTimer()
+	void Service::StartTimer()
 	{
 		timer_.expires_from_now(boost::posix_time::milliseconds(30));
-		timer_.async_wait(boost::bind(&service::run, this, _1));
+		timer_.async_wait(boost::bind(&Service::run, this, _1));
 		timerWaiting = true;
 	}
 
-	void service::run(const boost::system::error_code& error)
+	void Service::run(const boost::system::error_code& error)
 	{
 		timerWaiting = false;
 		if (error)
@@ -41,12 +41,12 @@ namespace loki
 		StartTimer();
 	}
 
-	void service::Run(long milli)
+	void Service::Run(long milli)
 	{
 		//LOG(INFO)<<"Delta = "<<milli;
 	}
 
-	void service::StopTimer()
+	void Service::StopTimer()
 	{
 		LOG(INFO)<<__func__;
 		if (timerWaiting)

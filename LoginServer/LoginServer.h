@@ -14,7 +14,7 @@
 #include "gamezone.h"
 #include "ACLZone.h"
 
-using loki::service;
+using loki::Service;
 using loki::connection_ptr;
 using loki::script;
 using loki::server;
@@ -22,7 +22,7 @@ using loki::MessagePtr;
 using loki::protobuf_dispatcher;
 using loki::protobuf_codec;
 
-class LoginServer : public service, public Singleton<LoginServer>
+class LoginServer : public Service, public Singleton<LoginServer>
 {
 public:
 	LoginServer(const std::string& file, loki::io_service_pool& pool);

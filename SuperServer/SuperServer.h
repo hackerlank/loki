@@ -17,7 +17,7 @@ using namespace std;
 using namespace loki;
 
 
-class SuperServer : public service, public Singleton<SuperServer>
+class SuperServer : public Service, public Singleton<SuperServer>
 {
 public:
 	SuperServer(const std::string& file, io_service_pool& pool);

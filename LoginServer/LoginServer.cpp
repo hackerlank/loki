@@ -14,7 +14,7 @@ thread_local script* t_script_ = nullptr;
 using namespace loki;
 
 LoginServer::LoginServer(const std::string& script_file, io_service_pool& pool)
-	:service(pool),
+	:Service(pool),
 	codec_(std::bind(&LoginServer::do_msg, this, std::placeholders::_1, std::placeholders::_2)),
 	script_file_(script_file)
 {

@@ -13,13 +13,13 @@ LIBS = -lpthread -lboost_system  `xml2-config --libs` -llua_tinker
 CXXFLAGS = $(compile_opt) $(HEADER_DIR) -D_REENTRANT -D_GNU_SOURCE
 CXXLFLAGS = $(compile_opt) $(LIB_DIR) $(LIBS)
 
-objects = server.o protobuf_codec.o db.o ServerList.o context.o logger.o
+objects = db.o ServerList.o context.o logger.o
 objects += TcpConn.o SubService.o
 objects += ServerManager.o
 objects += util.o
 
 objects += Login.pb.o Super.pb.o Record.pb.o Session.pb.o Scene.pb.o Gate.pb.o Cmd.pb.o
-objects += compressor_zlib.o encryptor_aes.o zMisc.o zProperties.o zDatabaseManager.o
+objects += zMisc.o zProperties.o zDatabaseManager.o
 objects += Service.o
 
 sources = $(objects:%.o=%.cpp)

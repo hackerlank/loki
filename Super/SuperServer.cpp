@@ -6,7 +6,7 @@
 
 using namespace loki;
 
-SuperServer::SuperServer(io_service_pool& p): service(p)
+SuperServer::SuperServer(io_service_pool& p): Service(p)
 {
 }
 

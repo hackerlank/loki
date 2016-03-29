@@ -14,7 +14,7 @@
 
 using namespace loki;
 
-class SuperServer : public Singleton<SuperServer>, service
+class SuperServer : public Singleton<SuperServer>, Service
 {
 	public:
 		std::map<int, std::vector<int> > serverSequence; //type->types

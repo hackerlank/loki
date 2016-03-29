@@ -8,7 +8,7 @@
 
 using namespace loki;
 
-LoginServer::LoginServer(io_service_pool& p): service(p)
+LoginServer::LoginServer(io_service_pool& p): Service(p)
 {
 	new GYListManager();
 }

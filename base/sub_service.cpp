@@ -9,7 +9,7 @@ namespace loki
 sub_service* sub_service::sub_instance_ = nullptr;
 
 sub_service::sub_service(io_service_pool& pool, const uint32_t server_type, const std::string& script_file)
-	:service(pool),
+	:Service(pool),
 	type_(server_type),
 	codec_(std::bind(&sub_service::do_msg, this, std::placeholders::_1, std::placeholders::_2)),
 	script_file_(script_file)

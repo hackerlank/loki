@@ -7,7 +7,7 @@
  */
 
 #pragma once
-#include "service.h"
+#include "Service.h"
 #include "server.h"
 #include "ServerList.h"
 #include <memory>

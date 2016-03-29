@@ -2,7 +2,7 @@
 #include "Proto.h"
 #include "NetMisc.h"
 #include "buffer.h"
-#include "service.h"
+#include "Service.h"
 
 using namespace loki;
 

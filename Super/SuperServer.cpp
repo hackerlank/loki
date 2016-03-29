@@ -51,6 +51,8 @@ bool SuperServer::Init(const std::string& filename)
 	loginClient->errorHandler = std::bind(&SuperServer::disconnectLogin, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 	loginClient->connectedHandler = std::bind(&SuperServer::handleConnectLogin, this, std::placeholders::_1);
 	loginClient->AsyncConnect(superTable.get<const char*>("login_ip"), superTable.get<uint16_t>("login_port"));
+
+	StartTimer();
 	return true;
 }
 
@@ -82,6 +84,7 @@ void SuperServer::RegisterCallback()
 	using namespace Super;
 	dispatcher_.registerMsgCallback<Super::t_Startup_Request>(std::bind(onStartup_Request, std::placeholders::_1, std::placeholders::_2));
 	dispatcher_.registerMsgCallback<Super::stLoginToGame>(std::bind(OnClientLogin, std::placeholders::_1, std::placeholders::_2));	//client login
+	dispatcher_.registerMsgCallback<Super::stSearchFight>(std::bind(OnSearchFight, std::placeholders::_1, std::placeholders::_2));
 
 	loginDispatcher_.registerMsgCallback<Login::t_LoginFL_OK>(std::bind(OnRetZoneLogin, std::placeholders::_1, std::placeholders::_2));
 	loginDispatcher_.registerMsgCallback<Login::t_NewSession_Session>(std::bind(OnPreLoginServer, std::placeholders::_1, std::placeholders::_2));
@@ -144,4 +147,9 @@ std::vector<int> SuperServer::getDependencyID(const int type) const
 		return it->second;
 	else
 		return std::vector<int>();
+}
+
+void SuperServer::Run(long delta)
+{
+	LOG(INFO)<<__func__;
 }

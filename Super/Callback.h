@@ -5,6 +5,8 @@
 #include "Login.pb.h"
 #include "ServerEntity.h"
 #include "LoginCertification.h"
+#include "PlayerEntity.h"
+#include "FightManager.h"
 
 namespace Super
 {
@@ -88,17 +90,43 @@ bool onUserVerifyVerCmd(TcpConnPtr conn, std::shared_ptr<::Login::stUserVerifyVe
 
 bool OnClientLogin(TcpConnPtr conn, std::shared_ptr<Super::stLoginToGame> msg)
 {
+	if (conn->GetData() != nullptr) {
+		LOG(INFO)<<msg->GetTypeName()<<", should be the first message";
+		return false;
+	}
+	//TODO: memory leak
+	PlayerEntity* context(new PlayerEntity(conn));
+	conn->SetData(context);
+
 	auto data = LoginCertification::instance().Get(msg->account());
 	if (!data)
 	{
 		LOG(INFO)<<"not verified by LoginServer";
 		return false;
 	}
+	context->SetAccid(data->accid);
 	LoginCertification::instance().Remove(msg->account());
-	LOG(INFO)<<"stLoginToGame account = "<<msg->account()<<", key="<<msg->key();
+	LOG(INFO)<<"stLoginToGame account = "<<msg->account()<<", key="<<msg->key()<<", accid="<<data->accid;
 	stLoginGameServerResult send;
 	send.set_ret(0);
 	conn->SendMessage(&send);
+	return true;
+}
+
+bool OnSearchFight(TcpConnPtr conn, std::shared_ptr<Super::stSearchFight> msg)
+{
+	PlayerEntity* player = static_cast<PlayerEntity*>(conn->GetData());
+	if (player == nullptr)
+	{
+		return false;
+	}
+	if (player->IsSearchFight())
+	{
+		LOG(INFO)<<"Already Search Fight!";
+		return true;
+	}
+	player->SetSearchFight(true);
+	FightManager::instance().Add(player->Accid(), player);
 	return true;
 }
 

@@ -7,7 +7,7 @@
 #include "Proto.h"
 #include "ServerList.h"
 #include <vector>
-#include "service.h"
+#include "Service.h"
 #include <unordered_map>
 #include "ConnEntity.h"
 #include "TcpConn.h"
@@ -48,4 +48,5 @@ class SuperServer : public Singleton<SuperServer>, service
 
 		void OnAccept(TcpConnPtr conn);
 		void OnError(TcpConnPtr conn, const boost::system::error_code& err, const std::string& hint);
+		void Run(long delta);
 };

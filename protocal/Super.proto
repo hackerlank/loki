@@ -38,6 +38,18 @@ message stLoginGameServerResult
 	optional uint32 ret = 1;
 }
 
+message PlayerInfo
+{
+	optional uint32 id = 1;
+	optional uint32 type = 2;
+	optional uint32 level = 3;
+	optional float atackRange = 4;
+	optional float moveSpeed = 5;
+	optional uint32 hp = 6;
+	optional uint32 skillid = 7;
+	optional uint32 skillCost = 8;
+}
+
 message stSearchFight
 {
 }

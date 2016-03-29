@@ -44,7 +44,11 @@ public:
 	const bool started() const { return started_; }
 	const void set_started(bool b) { started_ = b; }
 	const int version() const { return version_; }
+	virtual void Run(long delta);
+	void StartTimer();
+	void StopTimer();
 protected:
+	void run(const boost::system::error_code& error);
 	io_service_pool& pool_;
 	boost::asio::signal_set signals_;
 	bool started_ = false;
@@ -52,6 +56,9 @@ protected:
 	std::shared_ptr<script> script_;
 
 	static service* instance_;
+
+	boost::asio::deadline_timer timer_;
+	bool timerWaiting;
 };
 
 }

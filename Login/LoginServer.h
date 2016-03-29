@@ -6,7 +6,7 @@
 #include "script.h"
 #include "Proto.h"
 #include <vector>
-#include "service.h"
+#include "Service.h"
 #include <unordered_map>
 #include "ConnEntity.h"
 #include "ConnContainer.h"

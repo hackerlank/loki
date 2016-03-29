@@ -65,6 +65,7 @@ bool LoginServer::Init(const std::string& filename)
 	LOG(INFO)<<"Connect Database Success";
 
 	LoadAcl();
+	StartTimer();
 	return true;
 }
 

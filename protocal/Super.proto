@@ -1,10 +1,6 @@
 syntax = "proto2";
 
-import "Login.proto";
-
 package Super;
-
-//区服务器登录消息
 
 message ServerEntry
 {
@@ -40,4 +36,8 @@ message stLoginToGame
 message stLoginGameServerResult
 {
 	optional uint32 ret = 1;
+}
+
+message stSearchFight
+{
 }

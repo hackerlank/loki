@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
         '''
 def ParseFile(filename):
-    print("Processing file {0}".format(filename))
+    #print("Processing file {0}".format(filename))
     f = open(filename, 'r')
     try:
         allText = f.read()

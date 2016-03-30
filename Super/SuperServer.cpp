@@ -3,6 +3,10 @@
 #include "ServerType.h"
 #include "LoginCallback.h"
 #include "LoginCertification.h"
+#include "FightManager.h"
+#include "SceneManager.h"
+#include "PlayerManager.h"
+#include "PlayerEntity.h"
 
 using namespace loki;
 
@@ -20,6 +24,9 @@ bool SuperServer::Init(const std::string& filename)
 		return false;
 	}
 	new LoginCertification();
+	new FightManager();
+	new SceneManager();
+	new PlayerManager();
 	script_.reset(new script());       
 	if (!script_->dofile(filename))
 	{                                  
@@ -64,6 +71,13 @@ void SuperServer::OnAccept(TcpConnPtr conn)
 void SuperServer::OnError(TcpConnPtr conn, const boost::system::error_code& err, const std::string& hint)
 {
 	LOG(INFO)<<__func__<<",hint="<<hint;
+	PlayerEntity* data = static_cast<PlayerEntity*>(conn->GetData());
+	if (data)
+	{
+		PlayerManager::instance().Remove(data->accid);
+		delete data;
+		conn->SetData(nullptr);
+	}
 }
 
 void SuperServer::disconnectLogin(TcpConnPtr conn, const boost::system::error_code& err, const std::string& hint)
@@ -151,5 +165,6 @@ std::vector<int> SuperServer::getDependencyID(const int type) const
 
 void SuperServer::Run(long delta)
 {
-	LOG(INFO)<<__func__;
+	LoginCertification::instance().Update(delta);
+	FightManager::instance().Update(delta);
 }

@@ -7,6 +7,7 @@
 #include "LoginCertification.h"
 #include "PlayerEntity.h"
 #include "FightManager.h"
+#include "PlayerManager.h"
 
 namespace Super
 {
@@ -110,6 +111,7 @@ bool OnClientLogin(TcpConnPtr conn, std::shared_ptr<Super::stLoginToGame> msg)
 	stLoginGameServerResult send;
 	send.set_ret(0);
 	conn->SendMessage(&send);
+	PlayerManager::instance().Add(data->accid, context);
 	return true;
 }
 
@@ -127,6 +129,7 @@ bool OnSearchFight(TcpConnPtr conn, std::shared_ptr<Super::stSearchFight> msg)
 	}
 	player->SetSearchFight(true);
 	FightManager::instance().Add(player->Accid(), player);
+	LOG(INFO)<<__func__;
 	return true;
 }
 

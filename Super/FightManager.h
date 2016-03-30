@@ -33,11 +33,7 @@ public:
 			return nullptr;
 	}
 	
-	void Update()
-	{
-		if (data.size() >= 2)
-		{
-			LOG(INFO)<<"Create a battle";
-		}
-	}
+	void Update(long delta);
+
+	void PrepareFight(PlayerEntity* a, PlayerEntity* b);
 };

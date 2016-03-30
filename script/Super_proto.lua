@@ -15,6 +15,7 @@ Super.stLoginToGame = 1540112462
 Super.stLoginGameServerResult = 2044466912
 Super.PlayerInfo = 721395520
 Super.stSearchFight = 1372442858
+Super.stEnterFightScene = 1703663899
 
 R(Super.ServerEntry,"Super.ServerEntry")
 R(Super.t_Startup_Request,"Super.t_Startup_Request")
@@ -23,4 +24,5 @@ R(Super.stLoginToGame,"Super.stLoginToGame")
 R(Super.stLoginGameServerResult,"Super.stLoginGameServerResult")
 R(Super.PlayerInfo,"Super.PlayerInfo")
 R(Super.stSearchFight,"Super.stSearchFight")
+R(Super.stEnterFightScene,"Super.stEnterFightScene")
 

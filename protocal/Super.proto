@@ -1,4 +1,4 @@
-syntax = "proto2";
+//syntax = "proto2";
 
 package Super;
 
@@ -52,4 +52,10 @@ message PlayerInfo
 
 message stSearchFight
 {
+}
+
+message stEnterFightScene
+{
+	optional string scenename = 1;
+	optional uint32 host = 2;
 }

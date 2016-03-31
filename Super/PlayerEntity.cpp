@@ -75,6 +75,7 @@ void PlayerEntity::EnterScene(std::shared_ptr<Scene> scene)
 
 void PlayerEntity::SendCardToMe()
 {
+	//拥有的卡片
 	Super::stPlayerAllCards send;
 	for(auto it = troop.datas.begin(); it != troop.datas.end(); ++it)
 	{
@@ -83,4 +84,7 @@ void PlayerEntity::SendCardToMe()
 		card->set_level(it->second->level);
 	}
 	SendCmd(&send);
+
+	//双方的基地信息
+	scene->SendBaseInfoToUser(this);
 }

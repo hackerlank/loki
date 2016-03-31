@@ -3,6 +3,7 @@
 #include <cassert>
 #include "SceneObject.h"
 #include "Super.pb.h"
+#include "SceneTotem.h"
 
 uint32_t Scene::s_id = 0;
 
@@ -64,4 +65,45 @@ void Scene::SendCmdToNine(const google::protobuf::Message* msg)
 void Scene::SendCmdToNine(const loki::MessagePtr msg)
 {
 	SendCmdToNine(msg.get());
+}
+
+//创建玩家基地
+void Scene::CreatePlayerBase()
+{
+	float yPos = 10;
+	for(int i=0;i<2;++i)
+	{
+		if (player[i])
+		{
+			std::shared_ptr<SceneObject> npc(new SceneTotem(player[i]));
+			if (i == 0)
+			{
+				npc->position = Vector3(0, -yPos, 0);
+				npc->dir = 0;
+			}
+			else
+			{
+				npc->position = Vector3(0, yPos, 0);
+				npc->dir = 180;
+			}
+			base[i] = npc;
+		}
+	}
+}
+
+void Scene::SendBaseInfoToUser(PlayerEntity* player)
+{
+	for (int i=0;i<2;++i)
+	{
+		//player->SendCmd();
+	}
+}
+
+void Scene::Prepare()
+{
+	CreatePlayerBase();
+}
+
+void Scene::Leave(PlayerEntity* player)
+{
 }

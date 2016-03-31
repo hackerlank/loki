@@ -16,6 +16,7 @@ void FightManager::PrepareFight(PlayerEntity* a, PlayerEntity* b)
 	}
 	scene->AddPlayer(a);
 	scene->AddPlayer(b);
+	scene->Prepare();
 	SceneManager::instance().Add(scene);
 }
 

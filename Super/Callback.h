@@ -95,16 +95,21 @@ bool OnClientLogin(TcpConnPtr conn, std::shared_ptr<Super::stLoginToGame> msg)
 		LOG(INFO)<<msg->GetTypeName()<<", should be the first message";
 		return false;
 	}
-	//TODO: memory leak
-	PlayerEntity* context(new PlayerEntity(conn));
-	conn->SetData(context);
-
 	auto data = LoginCertification::instance().Get(msg->account());
 	if (!data)
 	{
 		LOG(INFO)<<"not verified by LoginServer";
 		return false;
 	}
+	if (PlayerManager::instance().ContainKey(data->accid))
+	{
+		LOG(INFO)<<"already login game";
+		return true;
+	}
+	PlayerEntity* context(new PlayerEntity(conn));
+	conn->SetData(context);
+	context->name = msg->account();
+
 	context->SetAccid(data->accid);
 	LoginCertification::instance().Remove(msg->account());
 	LOG(INFO)<<"stLoginToGame account = "<<msg->account()<<", key="<<msg->key()<<", accid="<<data->accid;

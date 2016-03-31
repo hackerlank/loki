@@ -19,11 +19,14 @@ class PlayerEntity : public loki::ConnEntity
 
 		void EnterScene(std::shared_ptr<Scene> scene);
 
+		void SendCardToMe();
+
 	public:
 		uint32_t accid;
 		uint32_t charid;
 		std::string name;
 		Troop troop;
+		std::shared_ptr<Scene> scene;
 	private:
 		bool searchFight;
 };

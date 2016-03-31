@@ -9,6 +9,7 @@ public:
 	uint32_t id = 0;
 	std::string name;
 	uint32_t type = 0;
+	uint32_t level = 0;
 	//uint32_t hp = 0;
 	uint32_t maxhp = 0;
 	uint32_t damage = 0;

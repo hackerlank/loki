@@ -14,7 +14,7 @@ Login.t_NewLoginSession = 1142697146
 Login.PlayerLogin = 827721786
 Login.t_NewSession_Session = 1913027674
 Login.t_GYList_FL = 166467500
-Login.message = 1964307705
+Login.stUserVerifyVerCmd = 1262396521
 Login.stUserRequestLoginCmd = 1588675000
 Login.stServerReturnLoginFailedCmd = 85552657
 Login.stServerReturnLoginSuccessCmd = 1045104084
@@ -25,7 +25,7 @@ R(Login.t_NewLoginSession,"Login.t_NewLoginSession")
 R(Login.PlayerLogin,"Login.PlayerLogin")
 R(Login.t_NewSession_Session,"Login.t_NewSession_Session")
 R(Login.t_GYList_FL,"Login.t_GYList_FL")
-R(Login.message,"Login.message")
+R(Login.stUserVerifyVerCmd,"Login.stUserVerifyVerCmd")
 R(Login.stUserRequestLoginCmd,"Login.stUserRequestLoginCmd")
 R(Login.stServerReturnLoginFailedCmd,"Login.stServerReturnLoginFailedCmd")
 R(Login.stServerReturnLoginSuccessCmd,"Login.stServerReturnLoginSuccessCmd")

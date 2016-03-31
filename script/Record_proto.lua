@@ -8,7 +8,6 @@ local R = CommandMap.Register
 
 if Record == nil then Record = {} end
 
-Record.t_LoginRecord = 1575270652
 Record.t_Get_SelectInfo_GateRecord = 1412563060
 Record.t_Ret_SelectInfo_GateRecord = 1377041903
 Record.t_CheckName_GateRecord = 1527901816
@@ -16,7 +15,6 @@ Record.t_CheckName_Return_GateRecord = 1270495998
 Record.t_CreateChar_GateRecord = 244737898
 Record.t_CreateChar_Return_GateRecord = 376819341
 
-R(Record.t_LoginRecord,"Record.t_LoginRecord")
 R(Record.t_Get_SelectInfo_GateRecord,"Record.t_Get_SelectInfo_GateRecord")
 R(Record.t_Ret_SelectInfo_GateRecord,"Record.t_Ret_SelectInfo_GateRecord")
 R(Record.t_CheckName_GateRecord,"Record.t_CheckName_GateRecord")

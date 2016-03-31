@@ -15,8 +15,10 @@ class SceneObject
 		std::shared_ptr<Scene> scene;
 
 		SceneObject();
-		~SceneObject();
+		virtual ~SceneObject();
 
 		Vector3 position;
 		float dir = 0;
+
+		virtual void SendMeToNine(){}
 };

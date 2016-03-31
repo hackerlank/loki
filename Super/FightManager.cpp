@@ -17,12 +17,6 @@ void FightManager::PrepareFight(PlayerEntity* a, PlayerEntity* b)
 	scene->AddPlayer(a);
 	scene->AddPlayer(b);
 	SceneManager::instance().Add(scene);
-	Super::stEnterFightScene send;
-	send.set_scenename("FightScene");
-	send.set_host(1);
-	a->SendCmd(&send);
-	send.set_host(0);
-	b->SendCmd(&send);
 }
 
 void FightManager::Update(long delta)

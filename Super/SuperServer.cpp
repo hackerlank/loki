@@ -74,6 +74,7 @@ void SuperServer::OnError(TcpConnPtr conn, const boost::system::error_code& err,
 	PlayerEntity* data = static_cast<PlayerEntity*>(conn->GetData());
 	if (data)
 	{
+		FightManager::instance().Remove(data->accid);
 		PlayerManager::instance().Remove(data->accid);
 		delete data;
 		conn->SetData(nullptr);
@@ -99,6 +100,7 @@ void SuperServer::RegisterCallback()
 	dispatcher_.registerMsgCallback<Super::t_Startup_Request>(std::bind(onStartup_Request, std::placeholders::_1, std::placeholders::_2));
 	dispatcher_.registerMsgCallback<Super::stLoginToGame>(std::bind(OnClientLogin, std::placeholders::_1, std::placeholders::_2));	//client login
 	dispatcher_.registerMsgCallback<Super::stSearchFight>(std::bind(OnSearchFight, std::placeholders::_1, std::placeholders::_2));
+	dispatcher_.registerMsgCallback<Super::stClientEnterScene>(std::bind(OnClientEnterScene, std::placeholders::_1, std::placeholders::_2));
 
 	loginDispatcher_.registerMsgCallback<Login::t_LoginFL_OK>(std::bind(OnRetZoneLogin, std::placeholders::_1, std::placeholders::_2));
 	loginDispatcher_.registerMsgCallback<Login::t_NewSession_Session>(std::bind(OnPreLoginServer, std::placeholders::_1, std::placeholders::_2));

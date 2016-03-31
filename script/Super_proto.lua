@@ -16,6 +16,9 @@ Super.stLoginGameServerResult = 2044466912
 Super.PlayerInfo = 721395520
 Super.stSearchFight = 1372442858
 Super.stEnterFightScene = 1703663899
+Super.stMapNpcData = 432870239
+Super.stPlayerAllCards = 1392500078
+Super.stClientEnterScene = 2097864843
 
 R(Super.ServerEntry,"Super.ServerEntry")
 R(Super.t_Startup_Request,"Super.t_Startup_Request")
@@ -25,4 +28,7 @@ R(Super.stLoginGameServerResult,"Super.stLoginGameServerResult")
 R(Super.PlayerInfo,"Super.PlayerInfo")
 R(Super.stSearchFight,"Super.stSearchFight")
 R(Super.stEnterFightScene,"Super.stEnterFightScene")
+R(Super.stMapNpcData,"Super.stMapNpcData")
+R(Super.stPlayerAllCards,"Super.stPlayerAllCards")
+R(Super.stClientEnterScene,"Super.stClientEnterScene")
 

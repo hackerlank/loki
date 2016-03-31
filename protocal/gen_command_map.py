@@ -37,11 +37,11 @@ def ParseFile(filename):
         f.close()
 
     
-    matchObj = re.search(r'package\s+(\w+);', allText, re.M)
+    matchObj = re.search(r'package[ \t]+(\w+);', allText, re.M)
     if matchObj:
         namespace = matchObj.group(1)
 
-    msgPat = re.compile(r'message\s+(\w+)')
+    msgPat = re.compile(r'message[ \t](\w+)')
     finds = msgPat.findall(allText)
     #print(finds)
     #print("")

@@ -8,12 +8,10 @@ local R = CommandMap.Register
 
 if Session == nil then Session = {} end
 
-Session.t_LoginSession = 558322374
 Session.t_regUser_GateSession = 1929182493
 Session.t_regScene_SceneSession = 902477455
 Session.t_regScene_ret_SceneSession = 3482549
 
-R(Session.t_LoginSession,"Session.t_LoginSession")
 R(Session.t_regUser_GateSession,"Session.t_regUser_GateSession")
 R(Session.t_regScene_SceneSession,"Session.t_regScene_SceneSession")
 R(Session.t_regScene_ret_SceneSession,"Session.t_regScene_ret_SceneSession")

@@ -133,4 +133,19 @@ bool OnSearchFight(TcpConnPtr conn, std::shared_ptr<Super::stSearchFight> msg)
 	return true;
 }
 
+bool OnClientEnterScene(TcpConnPtr conn, std::shared_ptr<Super::stClientEnterScene> msg)
+{
+	PlayerEntity* player = static_cast<PlayerEntity*>(conn->GetData());
+	if (player == nullptr)
+	{
+		return false;
+	}
+	if (!player->scene)
+	{
+		return false;
+	}
+	player->SendCardToMe();
+	return true;
+}
+
 }

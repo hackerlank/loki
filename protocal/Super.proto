@@ -59,3 +59,41 @@ message stEnterFightScene
 	optional string scenename = 1;
 	optional uint32 host = 2;
 }
+
+message  Vector3
+{
+	optional float x = 1;
+	optional float y = 2;
+	optional float z = 3;
+}
+
+message stMapNpcData
+{
+	optional uint32 npcid = 1;
+	optional uint32 type = 2;
+	optional string name = 3;
+	optional uint32 hp = 4;
+	optional uint32 maxhp = 5;
+	optional Vector3 position = 6;
+	optional float direction = 7;
+	repeated float states = 8;
+	optional float damage = 9;
+	optional float level = 10;
+	optional float attackrange = 11;
+	optional float attackinterval = 12;
+}
+
+message  stCardInfo
+{
+	optional uint32 id = 1;
+	optional uint32 level = 2;
+}
+
+message stPlayerAllCards
+{
+	repeated stCardInfo card = 1;
+}
+
+message stClientEnterScene
+{
+}

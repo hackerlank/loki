@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include "TcpConn.h"
 
 class PlayerEntity;
 class SceneObject;
@@ -16,15 +17,17 @@ private:
 public:
 	uint32_t id;
 	std::string filename;
+	std::string sceneName;
 	Scene();
 	bool LoadMap(const std::string& filename);
 
 	bool AddPlayer(PlayerEntity* a);
 
-	PlayerEntity* host;
-	PlayerEntity* guest;
+	PlayerEntity* player[2];
 
 	std::map<uint32_t, std::shared_ptr<SceneObject> > objs;
 
 	void AddSceneObject(std::shared_ptr<SceneObject>& obj);
+	void SendCmdToNine(const loki::MessagePtr msg);
+	void SendCmdToNine(const google::protobuf::Message* msg);
 };

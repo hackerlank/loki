@@ -42,13 +42,15 @@ namespace loki
 
 			void Start(bool openPassive = true)
 			{
+				recvHeartBeat = time(nullptr);
+				connected = true;
 				boost::asio::socket_base::keep_alive option1(true);
 				socket_.set_option(option1);
 
 				boost::asio::ip::tcp::no_delay option(true);
 				socket_.set_option(option);
 
-				LOG(INFO)<<"Socket started remoteip = "<<GetRemoteIP()<<" remote Port="<<GetRemotePort()<<", "<< (openPassive?"paasive":"active");
+				LOG(INFO)<<"Socket started remoteip = "<<GetRemoteIP()<<" remote Port="<<GetRemotePort()<<", "<< (openPassive?"passive":"active");
 
 				if (connectedHandler)
 					connectedHandler(shared_from_this());
@@ -70,6 +72,10 @@ namespace loki
 			}
 
 			void close()
+			{
+				socket_.close();
+			}
+			void Close()
 			{
 				socket_.close();
 			}
@@ -136,6 +142,7 @@ namespace loki
 				: socket_(p), data_(nullptr)
 			{
 				id = ++ s_id;
+				heartBeat = 0;
 			}
 			void SendMessage(const MessagePtr msg);
 			void SendMessage(const google::protobuf::Message* msg);
@@ -196,6 +203,8 @@ namespace loki
 					errorHandler(shared_from_this(), error, hint);
 				else
 					LOG(INFO)<<"Socket Error :"<<hint;
+
+				connected = false;
 			}
 
 			tcp::socket socket_;
@@ -210,6 +219,8 @@ namespace loki
 			uint32_t id;
 			uint32_t type;
 			void* data_;
+			bool connected = false;
+
 		public:
 			std::function<void (TcpConnection::pointer)> connectedHandler;
 			std::function<void (TcpConnection::pointer, const MessagePtr)> msgHandler;
@@ -219,6 +230,9 @@ namespace loki
 			static uint32_t s_id;
 			void* GetData() { return data_; }
 			void SetData(void* data) { data_ = data; }
+			bool Connected() const { return connected; }
+			time_t heartBeat;
+			time_t recvHeartBeat;
 	};
 
 };

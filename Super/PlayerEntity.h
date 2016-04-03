@@ -4,6 +4,7 @@
 #include <string>
 #include "Troop.h"
 #include <memory>
+#include "Super.pb.h"
 
 class Scene;
 
@@ -17,16 +18,32 @@ class PlayerEntity : public loki::ConnEntity
 		uint32_t Accid() const { return accid; }
 		void SetAccid(uint32_t a) { accid = a; }
 
-		void EnterScene(std::shared_ptr<Scene> scene);
+		void EnterScene(Scene* scene);
 
 		void SendCardToMe();
 
 	public:
-		uint32_t accid;
-		uint32_t charid;
+		uint32_t accid = 0;
+		uint32_t charid = 0;
 		std::string name;
 		Troop troop;
-		std::shared_ptr<Scene> scene;
+		Scene* scene = nullptr;
+
+		bool online = false;
+
+		void SetOnline(bool on);
+		bool IsOnline() const { return online; }
+
+		void DispatchCard(std::shared_ptr<Super::stDispatchCard> msg);
+
+		void Offline();
+
+		void Relogin();
+		void Login();
+
+		//分主场 客场
+		bool host = false;
+		std::shared_ptr<NpcData> base;
 	private:
 		bool searchFight;
 };

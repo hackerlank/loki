@@ -7,13 +7,15 @@
 void FightManager::PrepareFight(PlayerEntity* a, PlayerEntity* b)
 {
 	LOG(INFO)<<"Prepare a fight for ("<<a->name<<","<<b->name<<")";
-	std::shared_ptr<Scene> scene(new Scene());
+	Scene* scene(new Scene());
 	std::string filename = "test.map";
 	if (!scene->LoadMap(filename))
 	{
 		LOG(INFO)<<"Load map "<<filename<<" error";
 		return ;
 	}
+	a->host = true;
+	b->host = false;
 	scene->AddPlayer(a);
 	scene->AddPlayer(b);
 	scene->Prepare();

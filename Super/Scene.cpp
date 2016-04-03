@@ -1,15 +1,15 @@
 #include "Scene.h"
 #include "PlayerEntity.h"
 #include <cassert>
-#include "SceneObject.h"
+#include "SceneNpc.h"
 #include "Super.pb.h"
-#include "SceneTotem.h"
+#include "PlayerManager.h"
 
 uint32_t Scene::s_id = 0;
 
 Scene::Scene():id(++s_id)
 {
-	player[0] = player[1] = nullptr;
+	overTime = time(nullptr) + 180;
 }
 
 bool Scene::LoadMap(const std::string& filename)
@@ -23,42 +23,56 @@ bool Scene::LoadMap(const std::string& filename)
 
 bool Scene::AddPlayer(PlayerEntity* a)
 {
-	uint32_t host = 0;
-	if (player[0] == nullptr)
-	{
-		player[0] = a;
-		host = 1;
-	}
-	else if (player[1] == nullptr)
-	{
-		player[1] = a;
-		host = 0;
-	}
-	else
-	{
-		return false;
-	}
-	a->scene = shared_from_this();
+	assert(a->scene == nullptr);
+	assert(players.size() <= 1);
+	players.push_back(a);
+	
+	a->scene = this;
 	//Change to Fight Scene
 	Super::stEnterFightScene send;
-	send.set_host(host);
+	send.set_host(a->host);
 	send.set_scenename(sceneName);
 	a->SendCmd(&send);
 	return true;
 }
 
-void Scene::AddSceneObject(std::shared_ptr<SceneObject>& obj)
+void Scene::RemoveSceneNpc(const uint32_t tempid)
 {
+	Super::stRemoveSceneNpc send;
+	send.set_tempid(tempid);
+	SendCmdToNine(&send);
+}
+
+void Scene::RemovePlayer(PlayerEntity* player)
+{
+	if (this != player->scene)
+	{
+		return ;
+	}
+	player->scene = nullptr;
+	if (!player->IsOnline())
+	{
+		PlayerManager::instance().Remove(player->accid);
+		delete player;
+	}
+}
+
+void Scene::AddSceneNpc(SceneNpc* obj, bool notify)
+{
+	obj->scene = this;
 	objs[obj->tempid] = obj;
 	LOG(INFO)<<__func__<<", tempid="<<obj->tempid;
+
+	if (notify)
+		obj->SendMeToNine();
 }
 
 void Scene::SendCmdToNine(const google::protobuf::Message* msg)
 {
-	for(int i=0;i<2;++i)
+	for (int i = 0; i != players.size(); ++i)
 	{
-		if (player[i])
-			player[i]->SendCmd(msg);
+		if (players[i]->IsOnline())
+			players[i]->SendCmd(msg);
 	}
 }
 
@@ -70,24 +84,27 @@ void Scene::SendCmdToNine(const loki::MessagePtr msg)
 //创建玩家基地
 void Scene::CreatePlayerBase()
 {
-	float yPos = 10;
-	for(int i=0;i<2;++i)
+	float zPos = 40;
+	for(int i=0; i<players.size(); ++i)
 	{
-		if (player[i])
+		auto p = players[i];
+		SceneNpc* npc(new SceneNpc(p->base, p->accid));
+		if (i == 0)
 		{
-			std::shared_ptr<SceneObject> npc(new SceneTotem(player[i]));
-			if (i == 0)
-			{
-				npc->position = Vector3(0, -yPos, 0);
-				npc->dir = 0;
-			}
-			else
-			{
-				npc->position = Vector3(0, yPos, 0);
-				npc->dir = 180;
-			}
-			base[i] = npc;
+			npc->data->mutable_position()->set_x(0);
+			npc->data->mutable_position()->set_y(0);
+			npc->data->mutable_position()->set_z(-zPos);
+			npc->data->set_direction(0);
 		}
+		else if (i == 1)
+		{
+			npc->data->mutable_position()->set_x(0);
+			npc->data->mutable_position()->set_y(0);
+			npc->data->mutable_position()->set_z(zPos);
+			npc->data->set_direction(180);
+		}
+		base[i] = npc;
+		AddSceneNpc(npc, false);
 	}
 }
 
@@ -95,7 +112,7 @@ void Scene::SendBaseInfoToUser(PlayerEntity* player)
 {
 	for (int i=0;i<2;++i)
 	{
-		//player->SendCmd();
+		player->SendCmd(base[i]->data);
 	}
 }
 
@@ -106,4 +123,50 @@ void Scene::Prepare()
 
 void Scene::Leave(PlayerEntity* player)
 {
+}
+
+void Scene::Update(long delta)
+{
+	if (deleteMe)
+		return;
+	bool del = true;
+	for(int i=0;i< players.size(); ++i)
+	{
+		if (players[i]->IsOnline())
+		{
+			del = false;
+			break;
+		}
+	}
+	deleteMe = del;
+	if (deleteMe)
+	{
+		LOG(INFO)<<"Destroy Scene: no player in scene id = "<<id;
+	}
+	if (time(nullptr) > overTime)
+	{
+		deleteMe = true;
+		LOG(INFO)<<"Destroy Scene: OverTime is reach id = "<<id;
+	}
+	if (deleteMe)
+	{
+		Destroy();
+	}
+}
+
+
+void Scene::Destroy()
+{
+	//delete everyting in the scene, if there is no player online
+	for (auto it = objs.begin(); it != objs.end(); ++it)
+	{
+		auto npc = it->second;
+		delete npc;
+	}
+
+	for(int i=0;i< players.size(); ++i)
+	{
+		RemovePlayer(players[i]);
+	}
+	players.clear();
 }

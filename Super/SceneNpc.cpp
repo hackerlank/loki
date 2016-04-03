@@ -16,11 +16,13 @@ SceneNpc::SceneNpc(std::shared_ptr<NpcData> d, const uint32_t own)
 	data->set_level(1);
 	data->set_attackrange(d->attackRange);
 	data->set_attackinterval(d->attackInterval);
+	data->set_tempid(tempid);
 }
 
 SceneNpc::~SceneNpc()
 {
 	delete data;
+	LOG(INFO)<<__func__;
 }
 
 void SceneNpc::SendMeToNine()

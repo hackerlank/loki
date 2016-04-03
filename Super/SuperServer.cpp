@@ -65,18 +65,19 @@ bool SuperServer::Init(const std::string& filename)
 
 void SuperServer::OnAccept(TcpConnPtr conn)
 {
-	LOG(INFO)<<__func__;
+	conns[conn->GetID()] = conn;
+	LOG(INFO)<<__func__<<", size of connections = "<<conns.size();
 }
 
 void SuperServer::OnError(TcpConnPtr conn, const boost::system::error_code& err, const std::string& hint)
 {
+	if (conn->Connected())
+		conns.erase(conn->GetID());
 	LOG(INFO)<<__func__<<",hint="<<hint;
 	PlayerEntity* data = static_cast<PlayerEntity*>(conn->GetData());
 	if (data)
 	{
-		FightManager::instance().Remove(data->accid);
-		PlayerManager::instance().Remove(data->accid);
-		delete data;
+		data->Offline();
 		conn->SetData(nullptr);
 	}
 }
@@ -101,6 +102,8 @@ void SuperServer::RegisterCallback()
 	dispatcher_.registerMsgCallback<Super::stLoginToGame>(std::bind(OnClientLogin, std::placeholders::_1, std::placeholders::_2));	//client login
 	dispatcher_.registerMsgCallback<Super::stSearchFight>(std::bind(OnSearchFight, std::placeholders::_1, std::placeholders::_2));
 	dispatcher_.registerMsgCallback<Super::stClientEnterScene>(std::bind(OnClientEnterScene, std::placeholders::_1, std::placeholders::_2));
+	dispatcher_.registerMsgCallback<Super::stDispatchCard>(std::bind(OnDispatchCard, std::placeholders::_1, std::placeholders::_2));
+	dispatcher_.registerMsgCallback<Super::stHeartBeat>(std::bind(OnHeartBeat, std::placeholders::_1, std::placeholders::_2));
 
 	loginDispatcher_.registerMsgCallback<Login::t_LoginFL_OK>(std::bind(OnRetZoneLogin, std::placeholders::_1, std::placeholders::_2));
 	loginDispatcher_.registerMsgCallback<Login::t_NewSession_Session>(std::bind(OnPreLoginServer, std::placeholders::_1, std::placeholders::_2));
@@ -169,4 +172,48 @@ void SuperServer::Run(long delta)
 {
 	LoginCertification::instance().Update(delta);
 	FightManager::instance().Update(delta);
+	CheckRecvHeartBeat(delta);
+	SendHeartBeat(delta);
+
+	SceneManager::instance().Update(delta);
+}
+
+void SuperServer::SendHeartBeat(long delta)
+{
+	if (leftHeartBeatTime > delta)
+	{
+		leftHeartBeatTime -= delta; 
+		return ;
+	}
+	leftHeartBeatTime = 10000;
+	time_t curTime = time(nullptr);
+	Super::stHeartBeat send;
+	for (auto it = conns.begin(); it != conns.end(); ++it)
+	{
+		if (it->second->heartBeat + 3 < curTime)
+		{
+			it->second->SendMessage(&send);
+			it->second->heartBeat = curTime;
+		}
+	}
+}
+
+void SuperServer::CheckRecvHeartBeat(long delta)
+{
+	if (leftRecvHeartBeatTime > delta)
+	{
+		leftRecvHeartBeatTime -= delta;
+		return ;
+	}
+	leftRecvHeartBeatTime = 20000;
+	time_t curTime = time(nullptr);
+	for (auto it = conns.begin(); it != conns.end(); ++it)
+	{
+		if (it->second->recvHeartBeat + 6 < curTime)
+		{
+			if (it->second->Connected())
+				it->second->Close();
+		}
+	}
+
 }

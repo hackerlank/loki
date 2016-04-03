@@ -12,7 +12,7 @@ LIBS = $(COMMON_LIBS)
 CXXFLAGS = -g -std=gnu++11 $(SEAL_COMPILE_OPT)  -D_GNU_SOURCE -D_REENTRANT $(header_dir)
 CXXLFLAGS = -g -std=gnu++11 $(SEAL_COMPILE_OPT) -Wall $(lib_dir) $(LIBS)
 
-objects = SuperServer.o main.o PlayerEntity.o Scene.o FightManager.o Troop.o SceneManager.o SceneNpc.o SceneObject.o SceneTotem.o
+objects = SuperServer.o main.o PlayerEntity.o Scene.o FightManager.o Troop.o SceneManager.o SceneNpc.o SceneObject.o
 
 SRCS = $(objects:%.o=%.cpp)
 DEPS = $(objects:%.o=.%.d)

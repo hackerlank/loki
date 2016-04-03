@@ -3,15 +3,11 @@
 #include <map>
 #include <vector>
 #include <memory>
+#include "MapManager.h"
 
 class NpcData;
 
-class Troop
+class Troop : public MapManager<std::shared_ptr<NpcData> >
 {
 public:
-	std::map<uint32_t, std::shared_ptr<NpcData> > datas;
-
-	void Add(std::shared_ptr<NpcData> data);
-
-	void Remove(const uint32_t id);
 };

@@ -1,6 +1,6 @@
 #pragma once
-#include "Vector.h"
 #include <memory>
+//#include "Vector.h"
 
 class Scene;
 
@@ -12,13 +12,13 @@ class SceneObject
 		uint32_t tempid;		//id in scene
 		std::string name;
 
-		std::shared_ptr<Scene> scene;
+		Scene* scene;
 
 		SceneObject();
 		virtual ~SceneObject();
 
-		Vector3 position;
-		float dir = 0;
+		//Vector3 position;
+		//float dir = 0;
 
 		virtual void SendMeToNine(){}
 };

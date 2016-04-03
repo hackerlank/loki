@@ -81,6 +81,7 @@ message stMapNpcData
 	optional float level = 10;
 	optional float attackrange = 11;
 	optional float attackinterval = 12;
+	optional uint32 tempid = 13;
 }
 
 message  stCardInfo
@@ -96,4 +97,20 @@ message stPlayerAllCards
 
 message stClientEnterScene
 {
+}
+
+message stDispatchCard
+{
+	optional uint32 id = 1;
+	optional Vector3 position = 2;
+	optional float direction = 3;
+}
+
+message stHeartBeat
+{
+}
+
+message stRemoveSceneNpc
+{
+	optional uint32 tempid = 1;
 }

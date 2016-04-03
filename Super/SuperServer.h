@@ -49,4 +49,12 @@ class SuperServer : public Singleton<SuperServer>, Service
 		void OnAccept(TcpConnPtr conn);
 		void OnError(TcpConnPtr conn, const boost::system::error_code& err, const std::string& hint);
 		void Run(long delta);
+
+		std::map<uint32_t, TcpConnPtr> conns;
+
+		time_t leftHeartBeatTime = 3000;
+		void SendHeartBeat(long delta);
+
+		time_t leftRecvHeartBeatTime = 6000;
+		void CheckRecvHeartBeat(long delta);
 };

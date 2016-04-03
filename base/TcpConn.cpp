@@ -189,6 +189,11 @@ void TcpConnection::SendMessage(const MessagePtr msg)
 //
 void TcpConnection::SendMessage(const google::protobuf::Message* msg)
 {
+	if (!Connected()) 
+	{
+		LOG(INFO)<<"SendMessage in Unconnected socket!!!";
+		return;
+	}
 	std::shared_ptr<buffer> buff(new buffer(65536));
 	const std::string& typeName = msg->GetTypeName();
 	const uint32_t msgId = lua_tinker::call<const uint32_t>(Service::Instance()->GetLuaState(), "GetMessageIDByName", typeName.c_str());

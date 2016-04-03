@@ -34,5 +34,4 @@ protected:
 	uint32_t type_ = 0;
 	int state_ = 0;
 };
-
 }

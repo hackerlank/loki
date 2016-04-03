@@ -1,4 +1,4 @@
 #!/bin/bash
 
 path=`pwd`
-${path}/Super/SuperServer -t 2 -d -f script/Super.lua
+${path}/Super/SuperServer -t 1 -d -f script/Super.lua

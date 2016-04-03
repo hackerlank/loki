@@ -9,8 +9,11 @@ class Scene;
 class SceneManager : public Singleton<SceneManager>
 {
 private:
-	std::map<uint32_t, std::shared_ptr<Scene> > scenes;
+	std::map<uint32_t, Scene*> scenes;
 
+	uint32_t leftTime;
 public:
-	void Add(std::shared_ptr<Scene> s);
+	void Add(Scene* s);
+
+	void Update(long delta);
 };

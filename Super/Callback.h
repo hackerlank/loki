@@ -101,22 +101,24 @@ bool OnClientLogin(TcpConnPtr conn, std::shared_ptr<Super::stLoginToGame> msg)
 		LOG(INFO)<<"not verified by LoginServer";
 		return false;
 	}
+	LoginCertification::instance().Remove(msg->account());
+	LOG(INFO)<<"stLoginToGame account = "<<msg->account()<<", key="<<msg->key()<<", accid="<<data->accid;
+
 	if (PlayerManager::instance().ContainKey(data->accid))
 	{
-		LOG(INFO)<<"already login game";
+		auto p = PlayerManager::instance().Get(data->accid);
+		if (p->IsOnline())
+		{
+			LOG(INFO)<<"already login game";
+			return false;
+		}
+		p->Relogin();
 		return true;
 	}
 	PlayerEntity* context(new PlayerEntity(conn));
-	conn->SetData(context);
 	context->name = msg->account();
-
 	context->SetAccid(data->accid);
-	LoginCertification::instance().Remove(msg->account());
-	LOG(INFO)<<"stLoginToGame account = "<<msg->account()<<", key="<<msg->key()<<", accid="<<data->accid;
-	stLoginGameServerResult send;
-	send.set_ret(0);
-	conn->SendMessage(&send);
-	PlayerManager::instance().Add(data->accid, context);
+	context->Login();
 	return true;
 }
 
@@ -150,6 +152,28 @@ bool OnClientEnterScene(TcpConnPtr conn, std::shared_ptr<Super::stClientEnterSce
 		return false;
 	}
 	player->SendCardToMe();
+	return true;
+}
+
+bool OnDispatchCard(TcpConnPtr conn, std::shared_ptr<Super::stDispatchCard> msg)
+{
+	PlayerEntity* player = static_cast<PlayerEntity*>(conn->GetData());
+	if (player == nullptr)
+	{
+		return false;
+	}
+	if (!player->scene)
+	{
+		return false;
+	}
+	player->DispatchCard(msg);
+	return true;
+}
+
+bool OnHeartBeat(TcpConnPtr conn, std::shared_ptr<Super::stHeartBeat> msg)
+{
+	conn->recvHeartBeat = time(nullptr);
+	LOG(INFO)<<__func__;
 	return true;
 }
 

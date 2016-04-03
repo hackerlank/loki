@@ -2,12 +2,28 @@
 #include "Scene.h"
 #include "NpcData.h"
 #include "SceneNpc.h"
+#include "FightManager.h"
+#include "PlayerManager.h"
 
 using namespace loki;
 
 PlayerEntity::PlayerEntity(TcpConnPtr conn): ConnEntity(conn),
 	searchFight(false)
 {
+	conn->SetData(this);
+	{
+		base.reset(new NpcData());
+		auto npc = base;
+		npc->id = 1;
+		npc->level = 1;
+		npc->name = "aaa";
+		npc->type = 1;
+		npc->maxhp = 200;
+		npc->damage = 10;
+		npc->attackRange = 1.2f;
+		npc->attackInterval = 1.2f;
+		npc->moveSpeed = 0;
+	}
 
 	{
 		std::shared_ptr<NpcData> npc(new NpcData());
@@ -20,7 +36,7 @@ PlayerEntity::PlayerEntity(TcpConnPtr conn): ConnEntity(conn),
 		npc->attackRange = 1.2f;
 		npc->attackInterval = 1.2f;
 		npc->moveSpeed = 3;
-		troop.Add(npc);
+		troop.Add(npc->id, npc);
 	}
 
 	{
@@ -34,29 +50,8 @@ PlayerEntity::PlayerEntity(TcpConnPtr conn): ConnEntity(conn),
 		npc->attackRange = 1.2f;
 		npc->attackInterval = 1.2f;
 		npc->moveSpeed = 3;
-		troop.Add(npc);
+		troop.Add(npc->id, npc);
 	}
-	/*
-	npc->id = 2;
-	npc->name = "bbb";
-	npc->type = 2;
-	npc->maxhp = 200;
-	npc->damage = 10;
-	npc->attackRange = 3.2f;
-	npc->attackInterval = 1.2f;
-	npc->moveSpeed = 3;
-	troop.Add(npc);
-
-	npc->id = 3;
-	npc->name = "ccc";
-	npc->type = 3;
-	npc->maxhp = 200;
-	npc->damage = 10;
-	npc->attackRange = 2.2f;
-	npc->attackInterval = 1.2f;
-	npc->moveSpeed = 3;
-	troop.Add(npc);
-	*/
 }
 
 PlayerEntity::~PlayerEntity()
@@ -64,12 +59,12 @@ PlayerEntity::~PlayerEntity()
 	LOG(INFO)<<__func__;
 }
 
-void PlayerEntity::EnterScene(std::shared_ptr<Scene> scene)
+void PlayerEntity::EnterScene(Scene* scene)
 {
-	for(auto it = troop.datas.begin(); it != troop.datas.end(); ++it)
+	for(auto it = troop.data.begin(); it != troop.data.end(); ++it)
 	{
-		std::shared_ptr<SceneObject> npc(new SceneNpc(it->second, accid));
-		scene->AddSceneObject(npc);
+		SceneNpc* npc(new SceneNpc(it->second, accid));
+		scene->AddSceneNpc(npc);
 	}
 }
 
@@ -77,7 +72,7 @@ void PlayerEntity::SendCardToMe()
 {
 	//拥有的卡片
 	Super::stPlayerAllCards send;
-	for(auto it = troop.datas.begin(); it != troop.datas.end(); ++it)
+	for(auto it = troop.data.begin(); it != troop.data.end(); ++it)
 	{
 		Super::stCardInfo* card = send.add_card();
 		card->set_id(it->second->id);
@@ -87,4 +82,56 @@ void PlayerEntity::SendCardToMe()
 
 	//双方的基地信息
 	scene->SendBaseInfoToUser(this);
+}
+
+void PlayerEntity::DispatchCard(std::shared_ptr<Super::stDispatchCard> msg)
+{
+	if (!troop.ContainKey(msg->id()))
+	{
+		LOG(INFO)<<"Error id="<<msg->id();
+		return ;
+	}
+	auto npcdata = troop.Get(msg->id());
+	SceneNpc* npc(new SceneNpc(npcdata, accid));
+	//TODO: check position and dir validation
+	npc->data->mutable_position()->CopyFrom(msg->position());
+	npc->data->set_direction(msg->direction());
+	scene->AddSceneNpc(npc);
+}
+
+void PlayerEntity::SetOnline(bool on)
+{
+	online = on;
+	LOG(INFO)<<"Player Online = "<<online;
+}
+
+void PlayerEntity::Offline()
+{
+	LOG(INFO)<<"User offline name = "<<name;
+	SetOnline(false);
+	FightManager::instance().Remove(accid);
+	//PlayerManager::instance().Remove(accid);
+}
+
+void PlayerEntity::Login()
+{
+	LOG(INFO)<<__func__;
+	SetOnline(true);
+
+	Super::stLoginGameServerResult send;
+	send.set_ret(0);
+	SendCmd(&send);
+
+	PlayerManager::instance().Add(accid, this);
+}
+
+void PlayerEntity::Relogin()
+{
+	LOG(INFO)<<__func__;
+
+	SetOnline(true);
+
+	Super::stLoginGameServerResult send;
+	send.set_ret(0);
+	SendCmd(&send);
 }

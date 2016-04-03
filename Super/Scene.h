@@ -4,11 +4,12 @@
 #include <map>
 #include <memory>
 #include "TcpConn.h"
+#include <set>
 
 class PlayerEntity;
-class SceneObject;
+class SceneNpc;
 
-class Scene : public std::enable_shared_from_this<Scene>
+class Scene
 {
 private:
 	float width;
@@ -24,12 +25,13 @@ public:
 	bool AddPlayer(PlayerEntity* a);
 	void Leave(PlayerEntity* a);
 
-	PlayerEntity* player[2];
-	std::shared_ptr<SceneObject> base[2];
+	std::vector<PlayerEntity*> players;
 
-	std::map<uint32_t, std::shared_ptr<SceneObject> > objs;
+	SceneNpc* base[2];
+	std::map<uint32_t, SceneNpc*> objs;
 
-	void AddSceneObject(std::shared_ptr<SceneObject>& obj);
+	void AddSceneNpc(SceneNpc* obj, bool notify = true);
+	//void RemoveSceneNpcByOwner(PlayerEntity* );
 	void SendCmdToNine(const loki::MessagePtr msg);
 	void SendCmdToNine(const google::protobuf::Message* msg);
 
@@ -37,4 +39,13 @@ public:
 	void Prepare();
 
 	void SendBaseInfoToUser(PlayerEntity* );
+
+	void RemoveSceneNpc(const uint32_t tempid);
+	void RemovePlayer(PlayerEntity*);
+
+	bool deleteMe = false;
+
+	time_t overTime = 0;
+	void Update(long delta);
+	void Destroy();
 };

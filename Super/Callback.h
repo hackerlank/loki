@@ -112,6 +112,8 @@ bool OnClientLogin(TcpConnPtr conn, std::shared_ptr<Super::stLoginToGame> msg)
 			LOG(INFO)<<"already login game";
 			return false;
 		}
+		conn->SetData(p);
+		p->conn_ = conn;
 		p->Relogin();
 		return true;
 	}

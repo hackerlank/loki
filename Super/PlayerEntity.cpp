@@ -142,6 +142,11 @@ void PlayerEntity::Relogin()
 	Super::stLoginGameServerResult send;
 	send.set_ret(0);
 	SendCmd(&send);
+
+	if (scene)
+	{
+		scene->ChangeToScene(this);
+	}
 }
 
 void PlayerEntity::NpcMove(std::shared_ptr<Super::stNpcMoveCmd> msg)

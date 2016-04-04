@@ -50,4 +50,6 @@ public:
 	time_t overTime = 0;
 	void Update(long delta);
 	void Destroy();
+
+	void ChangeToScene(PlayerEntity* a);
 };

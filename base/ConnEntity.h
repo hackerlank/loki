@@ -28,8 +28,8 @@ public:
 
 	void SendCmd(const google::protobuf::Message* msg) { conn_->SendMessage(msg); }
 	void SendCmd(const MessagePtr msg) { conn_->SendMessage(msg); }
-protected:
 	TcpConnPtr conn_;
+protected:
 	uint32_t id_ = 0;
 	uint32_t type_ = 0;
 	int state_ = 0;

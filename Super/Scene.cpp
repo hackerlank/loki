@@ -27,13 +27,18 @@ bool Scene::AddPlayer(PlayerEntity* a)
 	assert(players.size() <= 1);
 	players.push_back(a);
 	
+	ChangeToScene(a);
+	return true;
+}
+
+void Scene::ChangeToScene(PlayerEntity* a)
+{
 	a->scene = this;
 	//Change to Fight Scene
 	Super::stEnterFightScene send;
 	send.set_host(a->host);
 	send.set_scenename(sceneName);
 	a->SendCmd(&send);
-	return true;
 }
 
 void Scene::RemoveSceneNpc(const uint32_t tempid)

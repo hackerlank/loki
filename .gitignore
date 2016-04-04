@@ -40,3 +40,4 @@ protocal/middle_login
 
 Login/LoginServer
 Super/SuperServer
+script/Super_proto.lua

@@ -177,4 +177,19 @@ bool OnHeartBeat(TcpConnPtr conn, std::shared_ptr<Super::stHeartBeat> msg)
 	return true;
 }
 
+bool OnNpcMoveCmd(TcpConnPtr conn, std::shared_ptr<Super::stNpcMoveCmd> msg)
+{
+	PlayerEntity* player = static_cast<PlayerEntity*>(conn->GetData());
+	if (player == nullptr)
+	{
+		return false;
+	}
+	if (!player->scene)
+	{
+		return false;
+	}
+	player->NpcMove(msg);
+	return true;
+}
+
 }

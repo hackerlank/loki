@@ -4,7 +4,7 @@
 SRCS = $(wildcard *.proto)
 
 middle_login: $(SRCS)
-	protoc --cpp_out=. $(SRCS)
+	@protoc --cpp_out=. $(SRCS)
 	@mv Login.pb.h ../base/
 	@mv Login.pb.cc ../base/Login.pb.cpp
 	@mv Super.pb.h ../base/

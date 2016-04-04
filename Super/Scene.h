@@ -30,6 +30,8 @@ public:
 	SceneNpc* base[2];
 	std::map<uint32_t, SceneNpc*> objs;
 
+	SceneNpc* GetSceneNpcByTempid(uint32_t tempid);
+
 	void AddSceneNpc(SceneNpc* obj, bool notify = true);
 	//void RemoveSceneNpcByOwner(PlayerEntity* );
 	void SendCmdToNine(const loki::MessagePtr msg);

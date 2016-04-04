@@ -35,6 +35,7 @@ class PlayerEntity : public loki::ConnEntity
 		bool IsOnline() const { return online; }
 
 		void DispatchCard(std::shared_ptr<Super::stDispatchCard> msg);
+		void NpcMove(std::shared_ptr<Super::stNpcMoveCmd> msg);
 
 		void Offline();
 
@@ -44,6 +45,9 @@ class PlayerEntity : public loki::ConnEntity
 		//分主场 客场
 		bool host = false;
 		std::shared_ptr<NpcData> base;
+
+		//已经出战的npcid, 避免重复出战
+		std::set<uint32_t> dispatched;
 	private:
 		bool searchFight;
 };

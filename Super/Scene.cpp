@@ -170,3 +170,16 @@ void Scene::Destroy()
 	}
 	players.clear();
 }
+
+SceneNpc* Scene::GetSceneNpcByTempid(uint32_t tempid)
+{
+	auto it = objs.find(tempid);
+	if (it == objs.end())
+	{
+		return nullptr;
+	}
+	else
+	{
+		return it->second;
+	}
+}

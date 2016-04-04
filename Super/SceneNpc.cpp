@@ -31,3 +31,19 @@ void SceneNpc::SendMeToNine()
 	send = *data;
 	scene->SendCmdToNine(&send);
 }
+
+void SceneNpc::MoveTo(const Super::Vector3& pos, float direction)
+{
+	data->mutable_position()->CopyFrom(pos);
+	data->set_direction(direction);
+	SendPositionToNine();
+}
+
+void SceneNpc::SendPositionToNine()
+{
+	Super::stNpcMoveCmd send;
+	send.set_tempid(tempid);
+	send.mutable_position()->CopyFrom(data->position());
+	send.set_direction(data->direction());
+	scene->SendCmdToNine(&send);
+}

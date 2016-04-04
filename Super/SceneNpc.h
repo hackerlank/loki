@@ -18,4 +18,8 @@ class SceneNpc : public SceneObject
 		virtual void SendMeToNine();
 
 		Super::stMapNpcData* data;
+
+		void MoveTo(const Super::Vector3& pos, float direction);
+
+		void SendPositionToNine();
 };

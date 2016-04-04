@@ -91,12 +91,20 @@ void PlayerEntity::DispatchCard(std::shared_ptr<Super::stDispatchCard> msg)
 		LOG(INFO)<<"Error id="<<msg->id();
 		return ;
 	}
+	if (dispatched.find(msg->id())!= dispatched.end())
+	{
+		LOG(INFO)<<"Already dispatched id="<<msg->id();
+		return ;
+	}
 	auto npcdata = troop.Get(msg->id());
 	SceneNpc* npc(new SceneNpc(npcdata, accid));
 	//TODO: check position and dir validation
 	npc->data->mutable_position()->CopyFrom(msg->position());
-	npc->data->set_direction(msg->direction());
+	float dir = host? 0: 180;
+	npc->data->set_direction(dir);
 	scene->AddSceneNpc(npc);
+
+	dispatched.insert(msg->id());
 }
 
 void PlayerEntity::SetOnline(bool on)
@@ -134,4 +142,21 @@ void PlayerEntity::Relogin()
 	Super::stLoginGameServerResult send;
 	send.set_ret(0);
 	SendCmd(&send);
+}
+
+void PlayerEntity::NpcMove(std::shared_ptr<Super::stNpcMoveCmd> msg)
+{
+	SceneNpc* npc = scene->GetSceneNpcByTempid(msg->tempid());
+	if (npc == nullptr)
+	{
+		LOG(INFO)<<"Unknown npc tempid="<<msg->tempid();
+		return ;
+	}
+	if (npc->owner != accid)
+	{
+		LOG(INFO)<<"Can't move npc tempid="<<msg->tempid()<<", is not mine";
+		return ;
+	}
+	//TODO: check distance and speed and msg frequence
+	npc->MoveTo(msg->position(), msg->direction());
 }

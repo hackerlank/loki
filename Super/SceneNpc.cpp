@@ -17,6 +17,8 @@ SceneNpc::SceneNpc(std::shared_ptr<NpcData> d, const uint32_t own)
 	data->set_attackrange(d->attackRange);
 	data->set_attackinterval(d->attackInterval);
 	data->set_tempid(tempid);
+	data->set_accid(owner);
+	data->set_movespeed(d->moveSpeed);
 }
 
 SceneNpc::~SceneNpc()

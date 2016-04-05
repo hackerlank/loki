@@ -82,6 +82,8 @@ message stMapNpcData
 	optional float attackrange = 11;
 	optional float attackinterval = 12;
 	optional uint32 tempid = 13;
+	optional uint32 accid = 14;
+	optional uint32 movespeed = 15;
 }
 
 message  stCardInfo
@@ -122,3 +124,9 @@ message stNpcMoveCmd
 	optional float direction = 3;
 }
 
+
+message stPlayerData
+{
+	optional uint32 accid = 1;
+	optional string name = 2;
+}

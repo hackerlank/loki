@@ -35,7 +35,7 @@ PlayerEntity::PlayerEntity(TcpConnPtr conn): ConnEntity(conn),
 		npc->damage = 10;
 		npc->attackRange = 1.2f;
 		npc->attackInterval = 1.2f;
-		npc->moveSpeed = 3;
+		npc->moveSpeed = 640;
 		troop.Add(npc->id, npc);
 	}
 
@@ -49,7 +49,7 @@ PlayerEntity::PlayerEntity(TcpConnPtr conn): ConnEntity(conn),
 		npc->damage = 10;
 		npc->attackRange = 1.2f;
 		npc->attackInterval = 1.2f;
-		npc->moveSpeed = 3;
+		npc->moveSpeed = 640;
 		troop.Add(npc->id, npc);
 	}
 }
@@ -131,6 +131,11 @@ void PlayerEntity::Login()
 	SendCmd(&send);
 
 	PlayerManager::instance().Add(accid, this);
+
+	Super::stPlayerData ss;
+	ss.set_accid(accid);
+	ss.set_name(name);
+	SendCmd(&ss);
 }
 
 void PlayerEntity::Relogin()

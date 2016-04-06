@@ -37,8 +37,13 @@ public:
 	void SendCmdToNine(const loki::MessagePtr msg);
 	void SendCmdToNine(const google::protobuf::Message* msg);
 
+	void SendCmdToNineExcept(const google::protobuf::Message* msg, const uint32_t accid);
+	void SendCmdToNineExcept(const loki::MessagePtr msg, const uint32_t accid);
+
 	void CreatePlayerBase();
 	void Prepare();
+
+	void SendNpcToPlayer(PlayerEntity*);
 
 	void SendBaseInfoToUser(PlayerEntity* );
 

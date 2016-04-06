@@ -9,7 +9,7 @@ uint32_t Scene::s_id = 0;
 
 Scene::Scene():id(++s_id)
 {
-	overTime = time(nullptr) + 180;
+	overTime = time(nullptr) + 300;
 }
 
 bool Scene::LoadMap(const std::string& filename)
@@ -86,6 +86,22 @@ void Scene::SendCmdToNine(const loki::MessagePtr msg)
 	SendCmdToNine(msg.get());
 }
 
+void Scene::SendCmdToNineExcept(const loki::MessagePtr msg, const uint32_t accid)
+{
+	SendCmdToNineExcept(msg.get(), accid);
+}
+
+void Scene::SendCmdToNineExcept(const google::protobuf::Message* msg, const uint32_t accid)
+{
+	for (int i = 0; i != players.size(); ++i)
+	{
+		if (players[i]->accid == accid)
+			continue;
+		if (players[i]->IsOnline())
+			players[i]->SendCmd(msg);
+	}
+}
+
 //创建玩家基地
 void Scene::CreatePlayerBase()
 {
@@ -148,11 +164,13 @@ void Scene::Update(long delta)
 	{
 		LOG(INFO)<<"Destroy Scene: no player in scene id = "<<id;
 	}
+	/*
 	if (time(nullptr) > overTime)
 	{
 		deleteMe = true;
 		LOG(INFO)<<"Destroy Scene: OverTime is reach id = "<<id;
 	}
+	*/
 	if (deleteMe)
 	{
 		Destroy();
@@ -186,5 +204,14 @@ SceneNpc* Scene::GetSceneNpcByTempid(uint32_t tempid)
 	else
 	{
 		return it->second;
+	}
+}
+
+void Scene::SendNpcToPlayer(PlayerEntity* p)
+{
+	for (auto it = objs.begin(); it != objs.end(); ++it)
+	{
+		auto npc = it->second;
+		p->SendCmd(npc->data);
 	}
 }

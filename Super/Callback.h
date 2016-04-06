@@ -149,11 +149,7 @@ bool OnClientEnterScene(TcpConnPtr conn, std::shared_ptr<Super::stClientEnterSce
 	{
 		return false;
 	}
-	if (!player->scene)
-	{
-		return false;
-	}
-	player->SendCardToMe();
+	player->EnterFightScene();
 	return true;
 }
 
@@ -188,6 +184,7 @@ bool OnNpcMoveCmd(TcpConnPtr conn, std::shared_ptr<Super::stNpcMoveCmd> msg)
 	}
 	if (!player->scene)
 	{
+		LOG(INFO)<<"Player is not in scene, receive move cmd is not valid";
 		return false;
 	}
 	player->NpcMove(msg);

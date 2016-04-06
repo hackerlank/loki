@@ -22,6 +22,8 @@ class PlayerEntity : public loki::ConnEntity
 
 		void SendCardToMe();
 
+		void EnterFightScene();
+
 	public:
 		uint32_t accid = 0;
 		uint32_t charid = 0;
@@ -48,6 +50,9 @@ class PlayerEntity : public loki::ConnEntity
 
 		//已经出战的npcid, 避免重复出战
 		std::set<uint32_t> dispatched;
+		bool relogin = false;
+
+		void SendMainData();
 	private:
 		bool searchFight;
 };

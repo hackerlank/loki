@@ -17,7 +17,7 @@ PlayerEntity::PlayerEntity(TcpConnPtr conn): ConnEntity(conn),
 		npc->id = 1;
 		npc->level = 1;
 		npc->name = "aaa";
-		npc->type = 1;
+		npc->type = 10;
 		npc->maxhp = 200;
 		npc->damage = 10;
 		npc->attackRange = 1.2f;
@@ -79,9 +79,6 @@ void PlayerEntity::SendCardToMe()
 		card->set_level(it->second->level);
 	}
 	SendCmd(&send);
-
-	//双方的基地信息
-	scene->SendBaseInfoToUser(this);
 }
 
 void PlayerEntity::DispatchCard(std::shared_ptr<Super::stDispatchCard> msg)
@@ -119,6 +116,7 @@ void PlayerEntity::Offline()
 	SetOnline(false);
 	FightManager::instance().Remove(accid);
 	//PlayerManager::instance().Remove(accid);
+	relogin = false;
 }
 
 void PlayerEntity::Login()
@@ -132,6 +130,11 @@ void PlayerEntity::Login()
 
 	PlayerManager::instance().Add(accid, this);
 
+	SendMainData();
+}
+
+void PlayerEntity::SendMainData()
+{
 	Super::stPlayerData ss;
 	ss.set_accid(accid);
 	ss.set_name(name);
@@ -148,10 +151,13 @@ void PlayerEntity::Relogin()
 	send.set_ret(0);
 	SendCmd(&send);
 
+	SendMainData();
+
 	if (scene)
 	{
 		scene->ChangeToScene(this);
 	}
+	relogin = true;
 }
 
 void PlayerEntity::NpcMove(std::shared_ptr<Super::stNpcMoveCmd> msg)
@@ -168,5 +174,23 @@ void PlayerEntity::NpcMove(std::shared_ptr<Super::stNpcMoveCmd> msg)
 		return ;
 	}
 	//TODO: check distance and speed and msg frequence
-	npc->MoveTo(msg->position(), msg->direction());
+	if (npc->CanMove())
+		npc->MoveTo(msg->position(), msg->direction());
+}
+
+void PlayerEntity::EnterFightScene()
+{
+	if (scene == nullptr)
+		return;
+	//卡片信息
+	SendCardToMe();
+	//场景上的npc信息
+	scene->SendNpcToPlayer(this);
+
+	if (!relogin)
+	{
+	}
+	else
+	{
+	}
 }

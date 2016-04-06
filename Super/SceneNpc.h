@@ -22,4 +22,7 @@ class SceneNpc : public SceneObject
 		void MoveTo(const Super::Vector3& pos, float direction);
 
 		void SendPositionToNine();
+		void SendPositionToNineExcept(const uint32_t accid);
+
+		bool CanMove();
 };

@@ -38,7 +38,16 @@ void SceneNpc::MoveTo(const Super::Vector3& pos, float direction)
 {
 	data->mutable_position()->CopyFrom(pos);
 	data->set_direction(direction);
-	SendPositionToNine();
+	SendPositionToNineExcept(owner);
+}
+
+void SceneNpc::SendPositionToNineExcept(const uint32_t owner)
+{
+	Super::stNpcMoveCmd send;
+	send.set_tempid(tempid);
+	send.mutable_position()->CopyFrom(data->position());
+	send.set_direction(data->direction());
+	scene->SendCmdToNineExcept(&send, owner);
 }
 
 void SceneNpc::SendPositionToNine()
@@ -48,4 +57,17 @@ void SceneNpc::SendPositionToNine()
 	send.mutable_position()->CopyFrom(data->position());
 	send.set_direction(data->direction());
 	scene->SendCmdToNine(&send);
+}
+
+bool SceneNpc::CanMove()
+{
+	if (!data)
+		return false;
+	//building can not move
+	if (data->type() == 10)
+		return false;
+	if (data->movespeed() == 0)
+		return false;
+	else
+		return true;
 }

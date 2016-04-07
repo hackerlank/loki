@@ -38,7 +38,7 @@ void SceneNpc::MoveTo(const Super::Vector3& pos, float direction)
 {
 	data->mutable_position()->CopyFrom(pos);
 	data->set_direction(direction);
-	SendPositionToNineExcept(owner);
+	SendPositionToNine();
 }
 
 void SceneNpc::SendPositionToNineExcept(const uint32_t owner)

@@ -44,12 +44,25 @@ PlayerEntity::PlayerEntity(TcpConnPtr conn): ConnEntity(conn),
 		npc->id = 2;
 		npc->level = 2;
 		npc->name = "bbb";
-		npc->type = 1;
+		npc->type = 2;
 		npc->maxhp = 200;
 		npc->damage = 10;
 		npc->attackRange = 1.2f;
 		npc->attackInterval = 1.2f;
 		npc->moveSpeed = 640;
+		troop.Add(npc->id, npc);
+	}
+	{
+		std::shared_ptr<NpcData> npc(new NpcData());
+		npc->id = 3;
+		npc->level = 1;
+		npc->name = "ccc";
+		npc->type = 3;
+		npc->maxhp = 200;
+		npc->damage = 10;
+		npc->attackRange = 1.2f;
+		npc->attackInterval = 1.2f;
+		npc->moveSpeed = 200;
 		troop.Add(npc->id, npc);
 	}
 }

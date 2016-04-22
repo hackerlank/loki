@@ -105,6 +105,7 @@ void SuperServer::RegisterCallback()
 	dispatcher_.registerMsgCallback<Super::stDispatchCard>(std::bind(OnDispatchCard, std::placeholders::_1, std::placeholders::_2));
 	dispatcher_.registerMsgCallback<Super::stHeartBeat>(std::bind(OnHeartBeat, std::placeholders::_1, std::placeholders::_2));
 	dispatcher_.registerMsgCallback<Super::stNpcMoveCmd>(std::bind(OnNpcMoveCmd, std::placeholders::_1, std::placeholders::_2));
+	dispatcher_.registerMsgCallback<Super::stAttackCmd>(std::bind(OnAttackCmd, std::placeholders::_1, std::placeholders::_2));
 
 	loginDispatcher_.registerMsgCallback<Login::t_LoginFL_OK>(std::bind(OnRetZoneLogin, std::placeholders::_1, std::placeholders::_2));
 	loginDispatcher_.registerMsgCallback<Login::t_NewSession_Session>(std::bind(OnPreLoginServer, std::placeholders::_1, std::placeholders::_2));

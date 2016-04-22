@@ -182,12 +182,18 @@ bool OnNpcMoveCmd(TcpConnPtr conn, std::shared_ptr<Super::stNpcMoveCmd> msg)
 	{
 		return false;
 	}
-	if (!player->scene)
+	player->NpcMove(msg);
+	return true;
+}
+
+bool OnAttackCmd(TcpConnPtr conn, std::shared_ptr<Super::stAttackCmd> msg)
+{
+	PlayerEntity* player = static_cast<PlayerEntity*>(conn->GetData());
+	if (player == nullptr)
 	{
-		LOG(INFO)<<"Player is not in scene, receive move cmd is not valid";
 		return false;
 	}
-	player->NpcMove(msg);
+	player->Attack(msg);
 	return true;
 }
 

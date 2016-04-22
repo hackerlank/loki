@@ -53,6 +53,7 @@ class PlayerEntity : public loki::ConnEntity
 		bool relogin = false;
 
 		void SendMainData();
+		void Attack(std::shared_ptr<Super::stAttackCmd> msg);
 	private:
 		bool searchFight;
 };

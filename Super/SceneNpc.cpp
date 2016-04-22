@@ -19,6 +19,8 @@ SceneNpc::SceneNpc(std::shared_ptr<NpcData> d, const uint32_t own)
 	data->set_tempid(tempid);
 	data->set_accid(owner);
 	data->set_movespeed(d->moveSpeed);
+
+	memset(&lastAttack, 0, sizeof(lastAttack));
 }
 
 SceneNpc::~SceneNpc()
@@ -70,4 +72,35 @@ bool SceneNpc::CanMove()
 		return false;
 	else
 		return true;
+}
+
+bool SceneNpc::AttackOverSpeed()
+{
+	struct timeval cur;
+	gettimeofday(&cur, nullptr);
+	long dif = cur.tv_sec * 1000000 + cur.tv_usec - (lastAttack.tv_sec * 1000000 + lastAttack.tv_usec);
+	return (dif >= static_cast<long>(data->attackinterval() * 1000));
+}
+
+void SceneNpc::ReduceHp(uint32_t change)
+{
+	if (change == 0)
+		return;
+	uint32_t realChange = 0;
+	if (change >= data->hp())
+	{
+		realChange = data->hp();
+		data->set_hp(0);
+		dead = true;
+	}
+	else
+	{
+		realChange = change;
+		data->set_hp(data->hp() - change);	//current data
+	}
+	Super::stHpCmd send;
+	send.set_tempid(tempid);
+	send.set_hp(data->hp());
+	scene->SendCmdToNine(&send);
+	LOG(INFO)<<"Change Hp = "<<realChange;
 }

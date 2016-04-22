@@ -130,3 +130,16 @@ message stPlayerData
 	optional uint32 accid = 1;
 	optional string name = 2;
 }
+
+message stAttackCmd
+{
+	optional uint32 skillid = 1;
+	optional uint32 attacker = 2;
+	optional uint32 defencer = 3;
+}
+
+message stHpCmd
+{
+	optional uint32 tempid = 1;
+	optional uint32 hp = 2;
+}

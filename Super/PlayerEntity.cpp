@@ -175,6 +175,11 @@ void PlayerEntity::Relogin()
 
 void PlayerEntity::NpcMove(std::shared_ptr<Super::stNpcMoveCmd> msg)
 {
+	if (!scene)
+	{
+		LOG(INFO)<<"Player is not in scene, receive move cmd is not valid";
+		return ;
+	}
 	SceneNpc* npc = scene->GetSceneNpcByTempid(msg->tempid());
 	if (npc == nullptr)
 	{
@@ -207,3 +212,48 @@ void PlayerEntity::EnterFightScene()
 	{
 	}
 }
+
+void PlayerEntity::Attack(std::shared_ptr<Super::stAttackCmd> msg)
+{
+	if (!scene)
+	{
+		LOG(INFO)<<"Player is not in scene, receive attack cmd is not valid";
+		return ;
+	}
+	SceneNpc* attacker = scene->GetSceneNpcByTempid(msg->attacker());
+	if (attacker == nullptr)
+	{
+		LOG(INFO)<<"Can't find attacker";
+		return ;
+	}
+	if (attacker->owner != accid)
+	{
+		LOG(INFO)<<"not my npc attackerid = "<<msg->attacker();
+		return;
+	}
+
+	SceneNpc* defencer = scene->GetSceneNpcByTempid(msg->defencer());
+	if (defencer == nullptr)
+	{
+		LOG(INFO)<<"Can't find defencer";
+		return ;
+	}
+	if (defencer->owner == accid)
+	{
+		LOG(INFO)<<"defencer is mine, can't attack";
+		return;
+	}
+	if (!defencer->IsAlive())
+	{
+		LOG(INFO)<<"defencer is dead, can't be attacked";
+		return;
+	}
+	if (attacker->AttackOverSpeed())
+	{
+		LOG(INFO)<<"attack over speed";
+		return;
+	}
+	//hp change , notify all
+	defencer->ReduceHp(attacker->data->damage());
+}
+

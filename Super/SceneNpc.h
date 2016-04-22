@@ -4,6 +4,7 @@
 #include <memory>
 #include "Vector.h"
 #include "Super.pb.h"
+#include<time.h>
 
 class NpcData;
 
@@ -25,4 +26,12 @@ class SceneNpc : public SceneObject
 		void SendPositionToNineExcept(const uint32_t accid);
 
 		bool CanMove();
+		struct timeval lastAttack;
+
+		bool AttackOverSpeed();
+
+		bool IsAlive() { return data->hp() > 0; }
+		//void AttackMe(SceneNpc* attacker, uint32_t id);
+		void ReduceHp(uint32_t change);
+		bool dead = false;
 };

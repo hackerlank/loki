@@ -56,7 +56,7 @@ class TcpServer
 		tcp::acceptor acceptor_;
 
 	public:
-		std::function<void (TcpConnPtr, const MessagePtr)> msgHandler;
+		std::function<void (TcpConnPtr, const char*, const uint32_t)> msgHandler;
 		std::function<void (TcpConnection::pointer)> connectedHandler;
 		std::function<void (TcpConnection::pointer, const boost::system::error_code& error, const std::string&)> errorHandler;
 };

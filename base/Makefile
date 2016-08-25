@@ -14,7 +14,7 @@ CXXFLAGS = $(compile_opt) $(HEADER_DIR) -D_REENTRANT -D_GNU_SOURCE
 CXXLFLAGS = $(compile_opt) $(LIB_DIR) $(LIBS)
 
 objects = db.o ServerList.o context.o logger.o
-objects += TcpConn.o SubService.o
+objects += SubService.o
 objects += ServerManager.o
 objects += util.o
 

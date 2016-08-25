@@ -4,16 +4,12 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/asio.hpp>
 #include "glog/logging.h"
-#include "encryptor.h"
 #include <cassert>
 #include <memory>		//for std::shared_ptr std::enable_shared_from_this
 #include <boost/lexical_cast.hpp>
-#include <google/protobuf/message.h>
 
 namespace loki
 {
-	typedef std::shared_ptr<google::protobuf::Message> MessagePtr;
-
 	using boost::asio::ip::tcp;
 
 	class TcpConnection;
@@ -42,7 +38,6 @@ namespace loki
 
 			void Start(bool openPassive = true)
 			{
-				recvHeartBeat = time(nullptr);
 				connected = true;
 				boost::asio::socket_base::keep_alive option1(true);
 				socket_.set_option(option1);
@@ -141,14 +136,59 @@ namespace loki
 			TcpConnection(boost::asio::io_service& p)
 				: socket_(p), data_(nullptr)
 			{
-				id = ++ s_id;
-				heartBeat = 0;
+				id = rand();
 			}
-			void SendMessage(const MessagePtr msg);
-			void SendMessage(const google::protobuf::Message* msg);
+
+			// A reference-counted non-modifiable buffer class.
+			class shared_const_buffer
+			{
+				public:
+					// Construct from a std::string.
+					explicit shared_const_buffer(const std::string& data)
+						: data_(new std::vector<char>(data.begin(), data.end())),
+						buffer_(boost::asio::buffer(*data_))
+				{
+				}
+					explicit shared_const_buffer(boost::shared_ptr<std::vector<char> > data)
+						: data_(data),
+						buffer_(boost::asio::buffer(*data_))
+				{
+				}
+
+					// Implement the ConstBufferSequence requirements.
+					typedef boost::asio::const_buffer value_type;
+					typedef const boost::asio::const_buffer* const_iterator;
+					const boost::asio::const_buffer* begin() const { return &buffer_; }
+					const boost::asio::const_buffer* end() const { return &buffer_ + 1; }
+
+				public:
+					boost::shared_ptr<std::vector<char> > data_;
+					boost::asio::const_buffer buffer_;
+			};
+
+			//logic thread
+			void SendMessage(const char* data, const uint32_t size)
+			{
+				boost::shared_ptr<std::vector<char> > buf(new std::vector<char>(size + 4));
+				uint32_t* length = (uint32_t*)((*buf).data());
+				*length = size;
+				memcpy((*buf).data() + 4, data, size);
+
+				socket_.get_io_service().post(boost::bind(&TcpConnection::SendMessageInQueue, shared_from_this(), buf));
+			}
+			//io thread
+			void SendMessageInQueue(boost::shared_ptr<std::vector<char> > buf)
+			{
+				shared_const_buffer bbb(buf);
+				boost::asio::async_write(socket_, bbb, boost::bind(&TcpConnection::handleWrite, shared_from_this(), _1, _2));
+			}
 
 		private:
-			void handleWrite(const boost::system::error_code& /*error*/, size_t /*bytes_transferred*/);
+			void handleWrite(const boost::system::error_code& error, size_t /*bytes_transferred*/)
+			{
+				if (error)
+					handleError(error, "write");
+			}
 
 			void handleConnect(const boost::system::error_code& error)
 			{
@@ -164,21 +204,15 @@ namespace loki
 			{
 				if (!error)
 				{
-					if (!ParseBuffer())	//Failed
-					{
-						handleError(error, "parse");
-					}
-					else
-					{
-						async_read_header();
-					}
+					if (msgHandler)
+						msgHandler(shared_from_this(), msgBuf.data(), msgBuf.size());
+					async_read_header();
 				}
 				else
 				{
 					handleError(error, "read");
 				}
 			}
-			bool ParseBuffer();
 			void handleReadHeader(const boost::system::error_code& error, size_t bytes_transferred)
 			{
 				if (!error)
@@ -215,7 +249,6 @@ namespace loki
 			} msgHeader;
 			std::vector<char> msgBuf;
 
-			std::shared_ptr<encryptor>  encryptor_;
 			uint32_t id;
 			uint32_t type;
 			void* data_;
@@ -223,16 +256,14 @@ namespace loki
 
 		public:
 			std::function<void (TcpConnection::pointer)> connectedHandler;
-			std::function<void (TcpConnection::pointer, const MessagePtr)> msgHandler;
+			std::function<void (TcpConnection::pointer, const char*, const uint32_t )> msgHandler;
 			std::function<void (TcpConnection::pointer, const boost::system::error_code& error, const std::string& hint)> errorHandler;
 			uint32_t GetID() const { return id; }
 			uint32_t GetType() const { return type; }
-			static uint32_t s_id;
+			//static uint32_t s_id;
 			void* GetData() { return data_; }
 			void SetData(void* data) { data_ = data; }
 			bool Connected() const { return connected; }
-			time_t heartBeat;
-			time_t recvHeartBeat;
 	};
 
 };

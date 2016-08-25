@@ -20,7 +20,8 @@ middle_login: $(SRCS)
 	@mv Cmd.pb.h ../base/
 	@mv Cmd.pb.cc ../base/Cmd.pb.cpp
 	@touch middle_login
-	./gen_command_map.py
+
+#./gen_command_map.py
 
 clear:
 	@rm middle_login ../*/*.pb.h ../*/*.pb.cpp

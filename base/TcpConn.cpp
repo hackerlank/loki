@@ -8,7 +8,6 @@ using namespace loki;
 
 uint32_t TcpConnection::s_id = 0;
 
-#if 0
 bool TcpConnection::ParseBuffer()
 {
 	if (Package::IsEncrypt(msgHeader.flag))
@@ -44,9 +43,15 @@ bool TcpConnection::ParseBuffer()
 	LOG(INFO)<<"Msg name = "<<msgName;
 	MessagePtr message(Proto::CreateMessage(msgName));
 	if (!message)
+	{
+		LOG(INFO)<<"Cannot create message "<<msgName;
 		return false;
+	}
 	if (!message->ParseFromString(std::string(msgBuf.data() + Package::MsgNameLengthSize + msgNameLen, msgBuf.size() - Package::MsgNameLengthSize - msgNameLen)))
+	{
+		LOG(INFO)<<"ParseFromString error";
 		return false;
+	}
 
 	if (msgHandler)
 		msgHandler(shared_from_this(), message);
@@ -102,11 +107,11 @@ void TcpConnection::SendMessage(const google::protobuf::Message* msg)
 void TcpConnection::handleWrite(const boost::system::error_code& error, size_t /*bytes_transferred*/)
 {
 	if (error)
-		handleError(error);
+		handleError(error, "write");
 }
 
-#endif
 
+#if 0
 bool TcpConnection::ParseBuffer()
 {
 	if (Package::IsEncrypt(msgHeader.flag))
@@ -222,3 +227,4 @@ void TcpConnection::handleWrite(const boost::system::error_code& error, size_t /
 	if (error)
 		handleError(error, "write");
 }
+#endif
